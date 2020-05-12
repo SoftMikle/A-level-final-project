@@ -2,7 +2,7 @@ package com.alevel.library.security.jwt;
 
 import com.alevel.library.model.Role;
 import com.alevel.library.model.Status;
-import com.alevel.library.model.UserEntity;
+import com.alevel.library.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -15,7 +15,7 @@ public class JwtUserFactory {
 
     }
 
-    public static JwtUser create(UserEntity user) {
+    public static JwtUser create(User user) {
         return new JwtUser(
                 user.getId(),
                 user.getUsername(),

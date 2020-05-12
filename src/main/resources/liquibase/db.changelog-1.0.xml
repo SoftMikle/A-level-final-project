@@ -27,10 +27,8 @@
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="TIMESTAMP" defaultValue="${now}">
-                <constraints nullable="false"/>
             </column>
             <column name="updated" type="TIMESTAMP" defaultValue="${now}">
-                <constraints nullable="false"/>
             </column>
             <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
                 <constraints nullable="false"/>

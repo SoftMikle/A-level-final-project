@@ -2,7 +2,7 @@ package com.alevel.library.service.impl;
 
 import com.alevel.library.model.Role;
 import com.alevel.library.model.Status;
-import com.alevel.library.model.UserEntity;
+import com.alevel.library.model.User;
 import com.alevel.library.repository.RoleRepository;
 import com.alevel.library.repository.UserRepository;
 import com.alevel.library.service.UserService;
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserEntity register(UserEntity user) {
+    public User register(User user) {
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
@@ -40,29 +40,29 @@ public class UserServiceImpl implements UserService {
         user.setRoles(userRoles);
         user.setStatus(Status.ACTIVE);
 
-        UserEntity registeredUser = userRepository.save(user);
+        User registeredUser = userRepository.save(user);
         log.info("In register - user: {} successfully registered", registeredUser);
 
         return registeredUser;
     }
 
     @Override
-    public List<UserEntity> getAll() {
-        List<UserEntity> result = userRepository.findAll();
+    public List<User> getAll() {
+        List<User> result = userRepository.findAll();
         log.info("In gatAll -  {} users found", result.size());
         return result;
     }
 
     @Override
-    public UserEntity findByUsername(String username) {
-        UserEntity result = userRepository.findByUsername(username);
+    public User findByUsername(String username) {
+        User result = userRepository.findByUsername(username);
         log.info("In findByUsername - user: {} found by username: {}", result, username);
         return result;
     }
 
     @Override
-    public UserEntity findById(Integer id) {
-        UserEntity result = userRepository.findById(id).orElse(null);
+    public User findById(Integer id) {
+        User result = userRepository.findById(id).orElse(null);
 
         if (result == null) {
             log.warn("In findById - no users found by id: {}", id);

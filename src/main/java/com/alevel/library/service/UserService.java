@@ -1,17 +1,17 @@
 package com.alevel.library.service;
 
-import com.alevel.library.model.UserEntity;
+import com.alevel.library.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    UserEntity register(UserEntity user);
+    User register(User user);
 
-    List<UserEntity> getAll();
+    List<User> getAll();
 
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 
-    UserEntity findById(Integer id);
+    User findById(Integer id);
 
     void delete(Integer id);
 }

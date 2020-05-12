@@ -1,6 +1,6 @@
 package com.alevel.library.security;
 
-import com.alevel.library.model.UserEntity;
+import com.alevel.library.model.User;
 import com.alevel.library.security.jwt.JwtUser;
 import com.alevel.library.security.jwt.JwtUserFactory;
 import com.alevel.library.service.UserService;
@@ -24,7 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userService.findByUsername(username);
+        User user = userService.findByUsername(username);
 
         if(user == null){
             throw new UsernameNotFoundException("User with username: " + username + " not found");

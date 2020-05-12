@@ -1,7 +1,7 @@
 package com.alevel.library.rest;
 
-import com.alevel.library.dto.response.UserEntityDto;
-import com.alevel.library.model.UserEntity;
+import com.alevel.library.dto.response.UserDto;
+import com.alevel.library.model.User;
 import com.alevel.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,14 +23,14 @@ public class UserController {
     }
 
     @GetMapping(value = "{id}")
-    public ResponseEntity<UserEntityDto> getUserById(@PathVariable(name = "id") int id) {
-        UserEntity userEntity = userService.findById(id);
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") int id) {
+        User user = userService.findById(id);
 
-        if(userEntity == null) {
+        if(user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        UserEntityDto result = UserEntityDto.toUserEntityDto(userEntity);
+        UserDto result = UserDto.toUserDto(user);
 
         return ResponseEntity.ok(result);
 
