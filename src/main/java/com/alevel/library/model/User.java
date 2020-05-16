@@ -3,6 +3,7 @@ package com.alevel.library.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Entity
@@ -19,9 +20,11 @@ public class User extends BaseEntity {
     @Column(name = "last_name")
     private String lastName;
 
+    @Email
     @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

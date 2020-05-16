@@ -24,7 +24,7 @@ public class RegistrationRequestDto {
     private String email;
 
     @Size(min = 8, max = 100)
-    @Pattern(regexp = "((?=.*[a-z])(?=.*\\\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,100})")
+    @Pattern(regexp = "((?=.*[a-z])(?=.*\\\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,})")
     private String password;
 
     public static User toUser(RegistrationRequestDto userDto) {
