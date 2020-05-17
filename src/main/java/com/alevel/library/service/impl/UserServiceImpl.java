@@ -8,6 +8,8 @@ import com.alevel.library.repository.UserRepository;
 import com.alevel.library.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,15 +50,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAll() {
-        List<User> result = userRepository.findAll();
+        List<User> result = (List<User>) userRepository.findAll();
         log.info("In gatAll -  {} users found", result.size());
         return result;
     }
 
+    public Page<User> findAll(Pageable pageable) {
+        Page<User> result = userRepository.findAll(pageable);
+        return result;
+    }
+
     @Override
-    public User findByUsername(String username) {
-        User result = userRepository.findByUsername(username);
-        log.info("In findByUsername - user: {} found by username: {}", result, username);
+    public User findByUserName(String userName) {
+        User result = userRepository.findByUserName(userName);
+        log.info("In findByUsername - user: {} found by userName: {}", result, userName);
         return result;
     }
 

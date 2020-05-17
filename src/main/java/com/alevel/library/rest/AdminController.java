@@ -13,9 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping(value = "/library/admin")
 public class AdminController {
@@ -37,7 +34,7 @@ public class AdminController {
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") int id) {
         User user = userService.findById(id);
 
-        if(user == null) {
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
@@ -47,19 +44,19 @@ public class AdminController {
 
     }
 
-//    @GetMapping(value = "users")
-//    public Page<UserDto> getAllUsers(
-//            @PageableDefault(page = 0, size = 20)
-//            @SortDefault.SortDefaults({
-//                    @SortDefault(sort = "name", direction = Sort.Direction.DESC),
-//                    @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-//            })
-//                    Pageable pageable) {
-//
-//        Page<User> users = userService.findAllPage(pageable);
-//        Page<UserDto> result = users.map(UserDto::toUserDto);
-//
-//        return result;
-//    }
+    @GetMapping(value = "users")
+    public Page<UserDto> getAllUsers(
+            @PageableDefault(page = 1, size = 20)
+            @SortDefault.SortDefaults({
+                    @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+            })
+                    Pageable pageable) {
+
+        Page<User> users = userService.findAll(pageable);
+        Page<UserDto> result = users.map(UserDto::toUserDto);
+
+        return result;
+    }
 
 }

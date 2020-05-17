@@ -29,7 +29,7 @@ public class RegistrationRequestDto {
 
     public static User toUser(RegistrationRequestDto userDto) {
         User user = new User();
-        user.setUsername(userDto.getUsername());
+        user.setUserName(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());

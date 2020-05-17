@@ -12,7 +12,7 @@ import java.util.List;
 public class User extends BaseEntity {
 
     @Column(name = "user_name")
-    private String username;
+    private String userName;
 
     @Column(name = "first_name")
     private String firstName;
