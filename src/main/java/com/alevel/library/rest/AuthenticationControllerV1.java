@@ -39,17 +39,17 @@ public class AuthenticationControllerV1 {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String username = requestDto.getUsername();
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = userService.findByUserName(username);
+            String login = requestDto.getLogin();
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
+            User user = userService.findByLogin(login);
             if (user == null) {
-                throw new UsernameNotFoundException("User with username: " + username + " not found");
+                throw new UsernameNotFoundException("User with login: " + login + " not found");
             }
             AuthenticationResponseDto response = new AuthenticationResponseDto();
 
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
+            String token = jwtTokenProvider.createToken(login, user.getRoles());
             response.setToken(token);
-            response.setUsername(username);
+            response.setLogin(login);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
@@ -60,19 +60,19 @@ public class AuthenticationControllerV1 {
     @PostMapping("/register")
     public ResponseEntity signUp(@RequestBody RegistrationRequestDto requestDto) {
         try {
-            String username = requestDto.getUsername();
-            User user = userService.findByUserName(username);
+            String login = requestDto.getLogin();
+            User user = userService.findByLogin(login);
             if (user != null) {
-                return new ResponseEntity("User: " + username + " already exists", HttpStatus.CONFLICT);
+                return new ResponseEntity("User: " + login + " already exists", HttpStatus.CONFLICT);
             }
             user = RegistrationRequestDto.toUser(requestDto);
             userService.register(user);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
             AuthenticationResponseDto response = new AuthenticationResponseDto();
 
-            String token = jwtTokenProvider.createToken(username, user.getRoles());
+            String token = jwtTokenProvider.createToken(login, user.getRoles());
             response.setToken(token);
-            response.setUsername(username);
+            response.setLogin(login);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

@@ -25,7 +25,7 @@ public class Book extends BaseEntity {
     @Column(name = "is_available")
     private boolean isAvailable;
 
-    @Column(name = "popularityIndex")
+    @Column(name = "popularity_index")
     private int popularityIndex;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -14,6 +14,6 @@ public class ClientCardItem extends BaseEntity {
     private Client client;
 
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "id", referencedColumnName = "book_id")
     private List<Book> books;
 }

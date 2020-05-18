@@ -11,7 +11,7 @@
             <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="user_name" type="VARCHAR(100)">
+            <column name="login" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>
             <column name="first_name" type="VARCHAR(100)">
@@ -206,6 +206,9 @@
         <createTable tableName="client_accounts_info" schemaName="library">
             <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="discount" type="DOUBLE PRECISION" defaultValue="0">
+                <constraints nullable="false"/>
             </column>
             <column name="donations_and_charity" type="VARCHAR(2048)">
                 <constraints nullable="false"/>

@@ -23,7 +23,7 @@ public class Client extends BaseEntity {
     private Date birthDay;
 
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "client_card_id")
+    @JoinColumn(name = "id", referencedColumnName = "client_card_id")
     private ClientCardItem clientCardItem;
 
     @Column(name = "is_debtor")

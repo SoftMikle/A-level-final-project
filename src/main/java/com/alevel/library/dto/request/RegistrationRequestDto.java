@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 public class RegistrationRequestDto {
 
     @Size(min = 3, max = 100)
-    private String username;
+    private String login;
 
     @Size(min = 3, max = 100)
     private String firstName;
@@ -29,7 +29,7 @@ public class RegistrationRequestDto {
 
     public static User toUser(RegistrationRequestDto userDto) {
         User user = new User();
-        user.setUserName(userDto.getUsername());
+        user.setLogin(userDto.getLogin());
         user.setEmail(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());

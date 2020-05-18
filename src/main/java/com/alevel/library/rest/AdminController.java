@@ -48,7 +48,7 @@ public class AdminController {
     public Page<UserDto> getAllUsers(
             @PageableDefault(page = 1, size = 20)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "user_name", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
