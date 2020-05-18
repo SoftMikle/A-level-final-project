@@ -13,7 +13,6 @@ public class ClientCardItem extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Client client;
 
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id", referencedColumnName = "book_id")
+    @OneToMany(mappedBy = "clientCardItem", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<Book> books;
 }
