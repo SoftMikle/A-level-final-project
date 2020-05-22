@@ -1,7 +1,7 @@
 package com.alevel.library.rest;
 
 import com.alevel.library.dto.authentication.AuthenticationRequestDto;
-import com.alevel.library.dto.request.RegistrationRequestDto;
+import com.alevel.library.dto.authentication.RegistrationRequestDto;
 import com.alevel.library.dto.response.AuthenticationResponseDto;
 import com.alevel.library.model.User;
 import com.alevel.library.security.jwt.JwtTokenProvider;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "library/auth")
+@RequestMapping(value = "auth")
 public class AuthenticationControllerV1 {
 
     private final AuthenticationManager authenticationManager;
@@ -49,7 +49,6 @@ public class AuthenticationControllerV1 {
 
             String token = jwtTokenProvider.createToken(login, user.getRoles());
             response.setToken(token);
-            response.setLogin(login);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
@@ -72,7 +71,6 @@ public class AuthenticationControllerV1 {
 
             String token = jwtTokenProvider.createToken(login, user.getRoles());
             response.setToken(token);
-            response.setLogin(login);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

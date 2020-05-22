@@ -1,52 +1,95 @@
 package com.alevel.library.rest;
 
-import com.alevel.library.dto.request.ClientRequest;
-import com.alevel.library.dto.response.ClientResponse;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import com.alevel.library.dto.request.ClientRequestDto;
+import com.alevel.library.dto.response.ClientAccountInfoDto;
+import com.alevel.library.dto.response.ClientResponseDto;
+import com.alevel.library.model.Client;
+import com.alevel.library.model.ClientAccountInfo;
+import com.alevel.library.service.ClientAccountService;
+import com.alevel.library.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 @RestController
 @RequestMapping("/clients/")
 public class ClientsController {
 
+    private final ClientService clientService;
+    private final ClientAccountService clientAccountService;
+
+    @Autowired
+    public ClientsController(ClientService clientService, ClientAccountService clientAccountService) {
+        this.clientService = clientService;
+        this.clientAccountService = clientAccountService;
+    }
+
     @GetMapping
-    ResponseEntity<String> getAll(SpringDataWebProperties.Pageable pageable) {
-        return ResponseEntity.ok("This will be a page of clients");
+    Page<Client> getAll(@PageableDefault(page = 0, size = 20)
+                        @SortDefault.SortDefaults({
+                                @SortDefault(sort = "last_name", direction = Sort.Direction.DESC),
+                                @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                        })
+                                Pageable pageable) {
+        Page<Client> result = clientService.findAll(pageable);
+
+        return result;
     }
 
     @PostMapping
-    ResponseEntity<ClientRequest> postClient(@RequestBody ClientRequest clientRequest) {
-        return ResponseEntity.ok(clientRequest);
+    HttpStatus postClient(@RequestBody ClientRequestDto clientRequestDto) {
+        Client client = clientRequestDto.toClient();
+        client = clientService.save(client);
+        if (client.getId() == null) {
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return HttpStatus.CREATED;
     }
 
-    @PutMapping("{clientId}")
-    ResponseEntity<ClientResponse> putClient(@RequestBody ClientRequest clientRequest, @PathVariable int clientId) {
-        ClientResponse clientResponse = new ClientResponse();
-        clientResponse.setId(clientId);
-        clientResponse.setBirthDate(clientRequest.getBirthDate());
-        clientResponse.setName(clientRequest.getName());
-        clientResponse.setSurname(clientRequest.getSurname());
-        return ResponseEntity.ok(clientResponse);
+    @PatchMapping("{clientId}")
+    HttpStatus putClient(@RequestBody ClientRequestDto clientRequestDto, @PathVariable int clientId) {
+        Client client = clientRequestDto.toClient();
+        client.setId(clientId);
+        clientService.update(client);
+        return HttpStatus.OK;
     }
 
     @GetMapping("{clientId}")
-    ResponseEntity<ClientResponse> getById(@PathVariable int clientId) {
-        ClientResponse clientResponse = new ClientResponse();
-        clientResponse.setId(clientId);
-        clientResponse.setBirthDate(new Date());
-        clientResponse.setName("Mikle");
-        clientResponse.setSurname("Savchenko");
-        return ResponseEntity.ok(clientResponse);
+    ResponseEntity<ClientResponseDto> getById(@PathVariable int clientId) {
+        Client client = clientService.findById(clientId);
+        if (client != null) {
+            ClientResponseDto result = ClientResponseDto.toClientResponseDto(client);
+            return ResponseEntity.ok(result);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("{clientId}")
-    ResponseEntity<String> deleteById(@PathVariable int clientId) {
-
-        return ResponseEntity.ok("User with id = " + clientId + " deleted");
+    HttpStatus deleteById(@PathVariable int clientId) {
+        if (clientService.existsById(clientId)) {
+            clientService.delete(clientId);
+            return HttpStatus.OK;
+        }
+        return HttpStatus.NOT_FOUND;
     }
 
+    @GetMapping("{clientId}/extra")
+    ResponseEntity<ClientAccountInfoDto> getAccountInfoById(@PathVariable int clientId) {
+        ClientAccountInfo clientAccountInfo = clientAccountService.findByClientId(clientId);
+        ClientAccountInfoDto result = ClientAccountInfoDto.toClientAccountInfoDto(clientAccountInfo);
+        return ResponseEntity.ok(result);
+    }
 
+    @PatchMapping("{clientId}/books/{bookId}")
+    HttpStatus setBook(@PathVariable int clientId, @PathVariable int bookId) {
+        clientService.setBook(clientId, bookId);
+        return HttpStatus.OK;
+    }
 }

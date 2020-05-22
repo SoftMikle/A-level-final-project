@@ -15,11 +15,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private static final String ADMIN_ENDPOINT = "/library/admin/**";
-    private static final String SIGN_IN_ENDPOINT = "/library/auth/login";
-    private static final String SIGN_UP_ENDPOINT = "/library/auth/register";
-
-
+    private static final String ADMIN_ENDPOINT = "/admin/**";
+    private static final String SIGN_IN_ENDPOINT = "/auth/login";
+    private static final String SIGN_UP_ENDPOINT = "/auth/register";
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
@@ -47,5 +45,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }
-
 }

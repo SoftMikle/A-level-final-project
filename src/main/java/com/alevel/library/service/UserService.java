@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserService {
     User register(User user);
 
-    List<User> getAll();
+    List<User> findAll();
 
     User findByLogin(String login);
 

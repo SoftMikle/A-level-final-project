@@ -1,4 +1,4 @@
-package com.alevel.library.dto.request;
+package com.alevel.library.dto.authentication;
 
 import com.alevel.library.model.User;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class RegistrationRequestDto {
     @Email
     private String email;
 
-    @Size(min = 8, max = 100)
+    @Size(min = 8, max = 100, message = "")
     @Pattern(regexp = "((?=.*[a-z])(?=.*\\\\d)(?=.*[A-Z])(?=.*[@#$%!]).{8,})")
     private String password;
 

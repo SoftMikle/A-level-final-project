@@ -1,7 +1,7 @@
 package com.alevel.library.security.jwt;
 
 import com.alevel.library.model.Role;
-import com.alevel.library.model.Status;
+import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,8 +31,8 @@ public class JwtUserFactory {
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> userRoles) {
         return userRoles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())
-                ).collect(Collectors.toList());
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
 
     }
 }

@@ -1,5 +1,6 @@
-package com.alevel.library.model;
+package com.alevel.library.model.additional;
 
+import com.alevel.library.model.additional.enums.Status;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,12 +16,14 @@ public class BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     @Column(name = "created")
     private Date created;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @Column(name = "updated")
     private Date updated;

@@ -1,4 +1,4 @@
-package com.alevel.library.model;
+package com.alevel.library.model.additional.enums;
 
 public enum Genre {
     FANTASY,
@@ -8,6 +8,7 @@ public enum Genre {
     MYSTERY,
     THRILLER,
     HORROR,
+    DETECTIVE_FICTION,
     HISTORICAL_FICTION,
     SCIENCE_FICTION,
     MEMOIR,

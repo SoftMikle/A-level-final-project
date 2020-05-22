@@ -19,7 +19,6 @@
         <posrgresql.connector.vercion>42.2.12</posrgresql.connector.vercion>
         <mysql.connetor.version>8.0.20</mysql.connetor.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
-        <spring-data-jpa-entity-graph.version>2.2.7</spring-data-jpa-entity-graph.version>
     </properties>
 
     <dependencies>

@@ -1,7 +1,7 @@
 package com.alevel.library.service.impl;
 
 import com.alevel.library.model.Role;
-import com.alevel.library.model.Status;
+import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.model.User;
 import com.alevel.library.repository.RoleRepository;
 import com.alevel.library.repository.UserRepository;
@@ -49,9 +49,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> findAll() {
         List<User> result = (List<User>) userRepository.findAll();
-        log.info("In gatAll -  {} users found", result.size());
+        log.info("In findAll -  {} users found", result.size());
         return result;
     }
 
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByLogin(String login) {
         User result = userRepository.findByLogin(login);
-        log.info("In findByLogin - user: {} found by login: {}", result, login);
+        log.info("In findByLogin - user with login: {} found", login);
         return result;
     }
 

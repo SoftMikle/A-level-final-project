@@ -1,4 +1,4 @@
-package com.alevel.library.security.jwt;
+package com.alevel.library.exceptions;
 
 
 import org.springframework.security.core.AuthenticationException;

@@ -12,7 +12,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="login" type="VARCHAR(100)">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="first_name" type="VARCHAR(100)">
                 <constraints nullable="false"/>
@@ -37,6 +37,7 @@
             </column>
         </createTable>
     </changeSet>
+
     <changeSet id="1.0.1" author="mikle.savchenko">
         <createTable tableName="roles" schemaName="library">
             <column name="id" type="INTEGER" autoIncrement="true">
@@ -58,7 +59,7 @@
     </changeSet>
 
     <changeSet id="1.0.2" author="mikle.savchenko">
-        <createTable tableName="user_roles"  schemaName="library">
+        <createTable tableName="user_roles" schemaName="library">
             <column name="user_id" type="INTEGER">
             </column>
             <column name="role_id" type="INTEGER">
@@ -144,9 +145,6 @@
             <column name="birth_day" type="DATE">
                 <constraints nullable="false"/>
             </column>
-            <column name="client_card_id" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
             <column name="is_debtor" type="BOOLEAN" defaultValue="false">
                 <constraints nullable="false"/>
             </column>
@@ -167,13 +165,13 @@
             <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="book_id" type="INTEGER">
+            <column name="client_id" type="INTEGER" autoIncrement="true">
                 <constraints nullable="false"/>
             </column>
-            <column name="booking_time" type="TIMESTAMP" defaultValue="${now}">
+            <column name="created" type="TIMESTAMP" defaultValue="${now}">
                 <constraints nullable="false"/>
             </column>
-            <column name="returning_time" type="TIMESTAMP" defaultValue="${now}">
+            <column name="updated" type="TIMESTAMP" defaultValue="${now}">
                 <constraints nullable="false"/>
             </column>
             <column name="status" type="VARCHAR(25)" defaultValue="ACTIVE">
@@ -183,31 +181,70 @@
     </changeSet>
 
     <changeSet id="1.0.9" author="mikle.savchenko">
-        <addForeignKeyConstraint baseColumnNames="client_card_id"
-                                 baseTableName="clients"
-                                 constraintName="fk_clients_client_cards"
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="client_cards"
+                                 constraintName="fk_client_cards_clients"
                                  onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="clients"/>
+    </changeSet>
+
+    <changeSet id="1.0.10" author="mikle.savchenko">
+        <createTable tableName="client_card_items" schemaName="library">
+            <column name="client_card_id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="book_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reserving_time" type="TIMESTAMP" defaultValue="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="returning_time" type="TIMESTAMP" defaultValue="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(25)" defaultValue="RESERVED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1.0.11" author="mikle.savchenko">
+        <addPrimaryKey constraintName="pk_client_card_items"
+                       tableName="client_card_items"
+                       columnNames="client_card_id, book_id"/>
+    </changeSet>
+
+    <changeSet id="1.0.12" author="mikle.savchenko">
+        <addForeignKeyConstraint baseColumnNames="client_card_id"
+                                 baseTableName="client_card_items"
+                                 constraintName="fk_client_card_items_client_cards"
+                                 onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="client_cards"/>
     </changeSet>
 
-    <changeSet id="1.0.10" author="mikle.savchenko">
+    <changeSet id="1.0.13" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="book_id"
-                                 baseTableName="client_cards"
-                                 constraintName="fk_client_cards_books"
+                                 baseTableName="client_card_items"
+                                 constraintName="fk_client_card_items_books"
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
                                  referencedTableName="books"/>
     </changeSet>
 
-    <changeSet id="1.0.11" author="mikle.savchenko">
+    <changeSet id="1.0.14" author="mikle.savchenko">
         <createTable tableName="client_accounts_info" schemaName="library">
             <column name="id" type="INTEGER" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="discount" type="DOUBLE PRECISION" defaultValue="0">
+            <column name="client_id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discount" type="DOUBLE PRECISION" defaultValue="0.0">
                 <constraints nullable="false"/>
             </column>
             <column name="donations_and_charity" type="VARCHAR(2048)">
@@ -225,8 +262,18 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.12" author="mikle.savchenko">
-        <createTable tableName="accounts_donated_books"  schemaName="library">
+    <changeSet id="1.0.15" author="mikle.savchenko">
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="client_accounts_info"
+                                 constraintName="fk_client_accounts_info_clients"
+                                 onDelete="RESTRICT"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="clients"/>
+    </changeSet>
+
+    <changeSet id="1.0.16" author="mikle.savchenko">
+        <createTable tableName="accounts_donated_books" schemaName="library">
             <column name="account_id" type="INTEGER">
             </column>
             <column name="book_id" type="INTEGER">
@@ -234,7 +281,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="1.0.13" author="mikle.savchenko">
+    <changeSet id="1.0.17" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="account_id"
                                  baseTableName="accounts_donated_books"
                                  constraintName="fk_accounts_donated_books_client_accounts_info"
@@ -244,7 +291,7 @@
                                  referencedTableName="client_accounts_info"/>
     </changeSet>
 
-    <changeSet id="1.0.14" author="mikle.savchenko">
+    <changeSet id="1.0.18" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="book_id"
                                  baseTableName="accounts_donated_books"
                                  constraintName="fk_accounts_donated_books_book"

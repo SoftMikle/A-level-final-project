@@ -1,15 +1,16 @@
 package com.alevel.library.model;
 
+import com.alevel.library.model.additional.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
-
 
 @Entity
 @Table(name = "roles", schema = "library")
 @Data
-public class Role extends BaseEntity{
+public class Role extends BaseEntity implements Serializable {
 
     @Column(name = "name")
     private String name;

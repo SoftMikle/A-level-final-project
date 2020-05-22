@@ -1,15 +1,17 @@
 package com.alevel.library.model;
 
+import com.alevel.library.model.additional.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "lib_users", schema = "library")
 @Data
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Serializable {
 
     @Column(name = "login")
     private String login;

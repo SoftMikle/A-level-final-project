@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/library/admin")
+@RequestMapping(value = "/admin")
 public class AdminController {
 
     private final UserService userService;
@@ -46,9 +46,9 @@ public class AdminController {
 
     @GetMapping(value = "users")
     public Page<UserDto> getAllUsers(
-            @PageableDefault(page = 1, size = 20)
+            @PageableDefault(page = 0, size = 20)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "user_name", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "login", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {
