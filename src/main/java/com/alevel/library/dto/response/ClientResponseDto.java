@@ -12,15 +12,9 @@ public class ClientResponseDto {
     String firstName;
     String lastName;
     Date birthDate;
+    Boolean isDebtor;
 
     public ClientResponseDto() {
-    }
-
-    public ClientResponseDto(int id, String firstName, String lastName, Date birthDate) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
     }
 
     public static ClientResponseDto toClientResponseDto(Client client) {
@@ -29,17 +23,8 @@ public class ClientResponseDto {
         clientResponseDto.setFirstName(client.getFirstName());
         clientResponseDto.setLastName(client.getLastName());
         clientResponseDto.setBirthDate(client.getBirthDay());
+        clientResponseDto.setIsDebtor(client.getIsDebtor());
 
         return clientResponseDto;
-    }
-
-    public Client toClient() {
-        Client client = new Client();
-        client.setId(id);
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
-        client.setBirthDay(birthDate);
-
-        return client;
     }
 }

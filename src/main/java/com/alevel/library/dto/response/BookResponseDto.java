@@ -28,23 +28,10 @@ public class BookResponseDto {
         bookResponseDto.setAuthor(book.getAuthor());
         bookResponseDto.setGenre(book.getGenre());
         bookResponseDto.setReleaseYear(book.getReleaseYear());
-        bookResponseDto.setAvailable(book.isAvailable());
+        bookResponseDto.setAvailable(book.getIsAvailable());
         bookResponseDto.setPopularityIndex(book.getPopularityIndex());
 
         return bookResponseDto;
-    }
-
-    public Book toBook() {
-        Book book = new Book();
-        book.setId(id);
-        book.setName(name);
-        book.setAuthor(author);
-        book.setGenre(genre);
-        book.setReleaseYear(releaseYear);
-        book.setAvailable(isAvailable);
-        book.setPopularityIndex(popularityIndex);
-
-        return book;
     }
 
 }

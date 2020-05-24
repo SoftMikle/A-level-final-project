@@ -4,8 +4,10 @@ import com.alevel.library.model.additional.enums.Status;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang3.builder.HashCodeExclude;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,7 +17,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "client_card_items", schema = "library")
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EntityListeners(AuditingEntityListener.class)
 public class ClientCardItem implements Serializable {
 
     @Id
@@ -34,14 +36,14 @@ public class ClientCardItem implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @ColumnDefault(value = "RESERVED")
     private Status status;
 
-    @HashCodeExclude
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_card_id", referencedColumnName = "id")
     private ClientCard clientCard;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id", referencedColumnName = "id")
     private Book book;
 

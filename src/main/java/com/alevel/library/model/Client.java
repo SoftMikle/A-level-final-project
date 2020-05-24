@@ -28,23 +28,21 @@ public class Client extends BaseEntity implements Serializable {
     @Column(name = "birth_day")
     private Date birthDay;
 
-    @HashCodeExclude
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private ClientCard clientCard;
 
-    @HashCodeExclude
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private ClientAccountInfo accountInfo;
 
     @Column(name = "is_debtor")
-    private boolean isDebtor;
+    private Boolean isDebtor;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Client)) return false;
         Client that = (Client) o;
-        return isDebtor() == that.isDebtor() &&
+        return getIsDebtor() == that.getIsDebtor() &&
                 getFirstName().equals(that.getFirstName()) &&
                 getLastName().equals(that.getLastName()) &&
                 getBirthDay().equals(that.getBirthDay());
@@ -52,7 +50,7 @@ public class Client extends BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFirstName(), getLastName(), getBirthDay(), isDebtor());
+        return Objects.hash(getFirstName(), getLastName(), getBirthDay(), getIsDebtor());
     }
 
     @Override

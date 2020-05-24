@@ -1,11 +1,17 @@
 package com.alevel.library.service.impl;
 
+import com.alevel.library.exceptions.ClientNotFoundException;
+import com.alevel.library.model.Client;
+import com.alevel.library.model.ClientCard;
 import com.alevel.library.model.ClientCardItem;
 import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.repository.ClientCardItemRepository;
 import com.alevel.library.service.ClientCardItemService;
+import com.alevel.library.service.ClientService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +21,8 @@ import java.util.List;
 public class ClientCardItemServiceImpl implements ClientCardItemService {
 
     private final ClientCardItemRepository clientCardItemRepository;
+    @Autowired
+    private ClientService clientService;
 
     @Autowired
     public ClientCardItemServiceImpl(ClientCardItemRepository clientCardItemRepository) {
@@ -33,7 +41,7 @@ public class ClientCardItemServiceImpl implements ClientCardItemService {
 
     @Override
     public ClientCardItem save(ClientCardItem clientCardItem) {
-        clientCardItem.setStatus(Status.ACTIVE);
+        clientCardItem.setStatus(Status.RESERVED);
         ClientCardItem registeredClientCardItem = clientCardItemRepository.save(clientCardItem);
         log.info("In create - clientCardItem with id: {} successfully registered", registeredClientCardItem.getId());
         return registeredClientCardItem;
@@ -74,5 +82,17 @@ public class ClientCardItemServiceImpl implements ClientCardItemService {
     @Override
     public List<ClientCardItem> findByClientCardId(Integer clientCardId) {
         return clientCardItemRepository.findByClientCardId(clientCardId);
+    }
+
+    @Override
+    public Page<ClientCardItem> findByClientId(Integer clientId, Pageable pageable) {
+        if(clientService.existsById(clientId)){
+            Client client = clientService.findById(clientId);
+            ClientCard clientCard = client.getClientCard();
+            int clientCardId = clientCard.getId();
+            Page<ClientCardItem> result = clientCardItemRepository.findByClientCardId(clientCardId, pageable);
+            return result;
+        }
+        throw new ClientNotFoundException("Client with id: " + clientId + " not found");
     }
 }

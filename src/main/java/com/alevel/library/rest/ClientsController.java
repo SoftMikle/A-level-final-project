@@ -3,12 +3,15 @@ package com.alevel.library.rest;
 import com.alevel.library.dto.request.ClientRequestDto;
 import com.alevel.library.dto.response.BookResponseDto;
 import com.alevel.library.dto.response.ClientAccountInfoDto;
+import com.alevel.library.dto.response.ClientCardItemResponseDto;
 import com.alevel.library.dto.response.ClientResponseDto;
 import com.alevel.library.model.Book;
 import com.alevel.library.model.Client;
 import com.alevel.library.model.ClientAccountInfo;
+import com.alevel.library.model.ClientCardItem;
 import com.alevel.library.service.BookService;
 import com.alevel.library.service.ClientAccountService;
+import com.alevel.library.service.ClientCardItemService;
 import com.alevel.library.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,36 +19,44 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
-@RequestMapping("/clients/")
+@RequestMapping("/clients")
 
 public class ClientsController {
 
     private final ClientService clientService;
     private final BookService bookService;
     private final ClientAccountService clientAccountService;
+    private final ClientCardItemService clientCardItemService;
 
     @Autowired
-    public ClientsController(ClientService clientService, BookService bookService, ClientAccountService clientAccountService) {
+    public ClientsController(ClientService clientService,
+                             BookService bookService,
+                             ClientAccountService clientAccountService,
+                             ClientCardItemService clientCardItemService) {
         this.clientService = clientService;
         this.bookService = bookService;
         this.clientAccountService = clientAccountService;
+        this.clientCardItemService = clientCardItemService;
     }
 
     @GetMapping
-    Page<Client> getAll(@PageableDefault(page = 0, size = 20)
+    Page<ClientResponseDto> getAll(@PageableDefault(page = 0, size = 20)
                         @SortDefault.SortDefaults({
-                                @SortDefault(sort = "last_name", direction = Sort.Direction.DESC),
+                                @SortDefault(sort = "lastName", direction = Sort.Direction.DESC),
                                 @SortDefault(sort = "id", direction = Sort.Direction.ASC)
                         })
                                 Pageable pageable) {
-        Page<Client> result = clientService.findAll(pageable);
-
+        Page<Client> clients = clientService.findAll(pageable);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
         return result;
     }
 
@@ -98,8 +109,32 @@ public class ClientsController {
     @GetMapping("{clientId}/books")
     ResponseEntity<Page<BookResponseDto>> getAllClientsBooks(@PathVariable int clientId, Pageable pageable) {
 
-        Page<Book> books = bookService.findAllBooksByClientId(clientId, pageable);
+        Page<Book> books = clientService.findAllBooksByClientId(clientId, pageable);
         Page<BookResponseDto> result = books.map(BookResponseDto::toBookResponseDto);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("{clientId}/history")
+    ResponseEntity<Page<ClientCardItemResponseDto>> getClientsHistory(@PathVariable int clientId, Pageable pageable) {
+        Page<ClientCardItem> clientCardItems = clientCardItemService.findByClientId(clientId, pageable);
+        Page<ClientCardItemResponseDto> result = clientCardItems
+                .map(ClientCardItemResponseDto::toClientCardItemResponseDto);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/books/{bookId}")
+    ResponseEntity<ClientResponseDto> getClientByBookId(@PathVariable int bookId) {
+
+        Client client = bookService.findClientByBookId(bookId);
+        ClientResponseDto result = ClientResponseDto.toClientResponseDto(client);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/debtors")
+    ResponseEntity<Page<ClientResponseDto>> getAllDebtors(Pageable pageable) {
+
+        Page<Client> clients = clientService.findAllDebtors(pageable);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
         return ResponseEntity.ok(result);
     }
 
@@ -108,5 +143,21 @@ public class ClientsController {
     HttpStatus setBook(@PathVariable int clientId, @PathVariable int bookId) {
         clientService.setBook(clientId, bookId);
         return HttpStatus.OK;
+    }
+
+    @GetMapping("/search")
+    ResponseEntity<Page<ClientResponseDto>> getAllByExample(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String surname,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthDate,
+            Pageable pageable) {
+
+        Client client = new Client();
+        client.setFirstName(name);
+        client.setLastName(surname);
+        client.setBirthDay(birthDate);
+        Page<Client> clients = clientService.search(pageable, client);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
+        return ResponseEntity.ok(result);
     }
 }

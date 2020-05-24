@@ -533,8 +533,4 @@
         </insert>
     </changeSet>
 
-    <changeSet id="00000000000000" author="jhipster" dbms="postgresql,oracle">
-        <createSequence sequenceName="hibernate_sequence" startValue="20000" incrementBy="1"/>
-    </changeSet>
-
 </databaseChangeLog>

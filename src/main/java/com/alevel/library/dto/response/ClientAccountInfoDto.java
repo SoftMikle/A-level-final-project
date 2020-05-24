@@ -13,12 +13,6 @@ public class ClientAccountInfoDto {
     public ClientAccountInfoDto() {
     }
 
-    public ClientAccountInfoDto(int id, double discount, String donationsAndCharity) {
-        this.id = id;
-        this.discount = discount;
-        this.donationsAndCharity = donationsAndCharity;
-    }
-
     public static ClientAccountInfoDto toClientAccountInfoDto(ClientAccountInfo clientAccountInfo) {
         ClientAccountInfoDto clientAccountInfoDto = new ClientAccountInfoDto();
         clientAccountInfoDto.setId(clientAccountInfo.getId());

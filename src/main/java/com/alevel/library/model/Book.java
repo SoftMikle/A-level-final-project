@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,21 +28,21 @@ public class Book extends BaseEntity implements Serializable {
     private Integer releaseYear;
 
     @Column(name = "is_available")
-    private boolean isAvailable;
+    private Boolean isAvailable;
 
     @Column(name = "popularity_index")
-    private int popularityIndex;
+    private Integer popularityIndex;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "book")
-    private ClientCardItem clientCardItem;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+    private List<ClientCardItem> clientCardItems;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Book)) return false;
         Book that = (Book) o;
-        return isAvailable() == that.isAvailable() &&
-                getPopularityIndex() == that.getPopularityIndex() &&
+        return getIsAvailable() == that.getIsAvailable() &&
+                getPopularityIndex().equals(that.getPopularityIndex()) &&
                 Objects.equals(getName(), that.getName()) &&
                 Objects.equals(getAuthor(), that.getAuthor()) &&
                 getGenre() == that.getGenre() &&
@@ -50,6 +51,6 @@ public class Book extends BaseEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getAuthor(), getGenre(), getReleaseYear(), isAvailable(), getPopularityIndex());
+        return Objects.hash(getName(), getAuthor(), getGenre(), getReleaseYear(), getIsAvailable(), getPopularityIndex());
     }
 }

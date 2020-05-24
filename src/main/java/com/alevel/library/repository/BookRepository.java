@@ -1,13 +1,14 @@
 package com.alevel.library.repository;
 
 import com.alevel.library.model.Book;
-import com.alevel.library.model.ClientCardItem;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.QueryByExampleExecutor;
 
-import java.util.List;
-
-public interface BookRepository extends PagingAndSortingRepository<Book, Integer> {
+public interface BookRepository extends PagingAndSortingRepository<Book, Integer>, QueryByExampleExecutor<Book> {
     Page<Book> findByName(Pageable pageable, String name);
+
+    Page<Book> findAll(Example example, Pageable pageable);
 }

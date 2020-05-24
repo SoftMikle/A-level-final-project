@@ -2,38 +2,34 @@ package com.alevel.library.service.impl;
 
 import com.alevel.library.exceptions.BookNotFoundException;
 import com.alevel.library.exceptions.BookStatusException;
+import com.alevel.library.exceptions.ClientCardItemNotFoundException;
 import com.alevel.library.model.Book;
-import com.alevel.library.model.ClientCard;
+import com.alevel.library.model.Client;
 import com.alevel.library.model.ClientCardItem;
 import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.repository.BookRepository;
 import com.alevel.library.service.BookService;
 import com.alevel.library.service.ClientCardItemService;
-import com.alevel.library.service.ClientCardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.JpaSort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @Service
 @Slf4j
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
-    private final ClientCardService clientCardService;
-    private final ClientCardItemService clientCardItemService;
+    @Autowired
+    private ClientCardItemService clientCardItemService;
 
     @Autowired
-    public BookServiceImpl(BookRepository bookRepository, ClientCardService clientCardService,
-                           ClientCardItemService clientCardItemService) {
+    public BookServiceImpl(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
-        this.clientCardService = clientCardService;
-        this.clientCardItemService = clientCardItemService;
     }
 
     @Override
@@ -108,27 +104,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findAllBooksByClientId(Integer clientId, Pageable pageable) {
-        ClientCard clientCard = clientCardService.findByClientId(clientId);
-        List<ClientCardItem> clientCardItems = clientCardItemService.findByClientCardId(clientCard.getId());
-        List<Book> books = clientCardItems.stream()
-                .filter(clientCardItem -> clientCardItem.getStatus().equals(Status.RESERVED))
-                .map(ClientCardItem::getBook)
-                .collect(Collectors.toList());
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), books.size());
-        Page<Book> result = new PageImpl(books.subList(start, end), pageable, books.size());
-        return result;
-    }
-
-    @Override
     public void freeBook(int bookId) {
         if (bookRepository.existsById(bookId)) {
             Book book = findById(bookId);
-            if (!book.isAvailable()) {
-                book.setAvailable(true);
+            if (!book.getIsAvailable()) {
+                book.setIsAvailable(true);
                 bookRepository.save(book);
-                ClientCardItem clientCardItem = book.getClientCardItem();
+                ClientCardItem clientCardItem = getClientCardItem(bookId, book);
+                ;
                 if (clientCardItem != null) {
                     clientCardItem.setStatus(Status.INACTIVE);
                     clientCardItemService.updateStatus(clientCardItem);
@@ -139,5 +122,39 @@ public class BookServiceImpl implements BookService {
         } else {
             throw new BookNotFoundException("Invalid id for book");
         }
+    }
+
+    @Override
+    public Client findClientByBookId(int bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Invalid id for book"));
+        if (book.getIsAvailable()) {
+            throw new BookStatusException("Book is free");
+        }
+        ClientCardItem clientCardItem = getClientCardItem(bookId, book);
+        Client result = clientCardItem.getClientCard().getClient();
+        return result;
+    }
+
+    @Override
+    public Page<Book> search(Pageable pageable, Book book) {
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withMatcher("name", contains())
+                .withMatcher("author", contains())
+                .withMatcher("releaseYear", exact())
+                .withMatcher("genre", contains())
+                .withMatcher("isAvailable", exact());
+        Example<Book> example = Example.of(book, matcher);
+        Page<Book> result = bookRepository.findAll(example, pageable);
+        return result;
+    }
+
+    private ClientCardItem getClientCardItem(int bookId, Book book) {
+        return book.getClientCardItems().stream()
+                .filter(item -> item.getStatus().equals(Status.RESERVED))
+                .findFirst()
+                .orElseThrow(() -> new ClientCardItemNotFoundException("ClientCardItems for book with id: " +
+                        bookId + " not found"));
     }
 }

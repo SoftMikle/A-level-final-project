@@ -5,17 +5,18 @@ import com.alevel.library.exceptions.ClientNotFoundException;
 import com.alevel.library.model.*;
 import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.repository.ClientRepository;
-import com.alevel.library.service.BookService;
-import com.alevel.library.service.ClientAccountService;
-import com.alevel.library.service.ClientCardService;
-import com.alevel.library.service.ClientService;
+import com.alevel.library.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.exact;
 
 @Service
 @Slf4j
@@ -23,6 +24,8 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientCardService clientCardService;
+    @Autowired
+    private ClientCardItemService clientCardItemService;
     private final ClientAccountService clientAccountService;
     private final BookService bookService;
 
@@ -40,7 +43,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public boolean existsById(Integer id) {
         boolean result = clientRepository.existsById(id);
-        if(result) {
+        if (result) {
             log.info("In existsById - client with id: {} exists", id);
         }
         log.info("In existsById - client with id: {} not exists", id);
@@ -72,16 +75,19 @@ public class ClientServiceImpl implements ClientService {
     }
 
     public Client update(Client client) {
-        if(existsById(client.getId())){
+        if (existsById(client.getId())) {
             Client existingClient = findById(client.getId());
-            if(client.getFirstName() != null){
+            if (client.getFirstName() != null) {
                 existingClient.setFirstName(client.getFirstName());
             }
-            if(client.getLastName() != null){
+            if (client.getLastName() != null) {
                 existingClient.setLastName(client.getLastName());
             }
-            if(client.getBirthDay() != null){
+            if (client.getBirthDay() != null) {
                 existingClient.setBirthDay(client.getBirthDay());
+            }
+            if (client.getIsDebtor() != null) {
+                existingClient.setIsDebtor(client.getIsDebtor());
             }
             return clientRepository.save(existingClient);
         }
@@ -127,19 +133,21 @@ public class ClientServiceImpl implements ClientService {
     public void setBook(int clientId, int bookId) {
         Client client = clientRepository.findById(clientId).orElse(null);
         Book book = bookService.findById(bookId);
-        if(book != null && client != null) {
+        if (book != null && client != null) {
             ClientCard clientCard = client.getClientCard();
             ClientCardItem result = new ClientCardItem();
+
             result.setBook(book);
             result.setClientCard(clientCard);
             result.setStatus(Status.RESERVED);
+            clientCardItemService.save(result);
 
             book.setPopularityIndex(book.getPopularityIndex() + 1);
-            book.setAvailable(false);
+            book.setIsAvailable(false);
             bookService.save(book);
 
             Set<ClientCardItem> clientCardItems = clientCard.getClientCardItems();
-            if(clientCardItems == null){
+            if (clientCardItems == null) {
                 clientCardItems = Set.of(result);
                 clientCard.setClientCardItems(clientCardItems);
             } else {
@@ -147,11 +155,45 @@ public class ClientServiceImpl implements ClientService {
             }
             clientCardService.save(clientCard);
         } else {
-            if(client == null) {
+            if (client == null) {
                 throw new ClientNotFoundException("Client with id: " + clientId + " not found");
             } else {
                 throw new BookNotFoundException("Book with id: " + bookId + " not found");
             }
         }
+    }
+
+    @Override
+    public Page<Client> findAllDebtors(Pageable pageable) {
+        Page<Client> result = clientRepository.findByIsDebtor(pageable, true);
+        return result;
+    }
+
+    @Override
+    public Page<Book> findAllBooksByClientId(Integer clientId, Pageable pageable) {
+        ClientCard clientCard = clientCardService.findByClientId(clientId);
+        List<ClientCardItem> clientCardItems = clientCardItemService.findByClientCardId(clientCard.getId());
+        List<Book> books = clientCardItems.stream()
+                .filter(clientCardItem -> clientCardItem.getStatus().equals(Status.RESERVED))
+                .map(ClientCardItem::getBook)
+                .collect(Collectors.toList());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), books.size());
+        Page<Book> result = new PageImpl(books.subList(start, end), pageable, books.size());
+        return result;
+    }
+
+    @Override
+    public Page<Client> search(Pageable pageable, Client client) {
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withMatcher("firstName", contains())
+                .withMatcher("lastName", contains())
+                .withMatcher("birthDay", exact());
+        Example<Client> example = Example.of(client, matcher);
+
+        Page<Client> result = clientRepository.findAll(example, pageable);
+        return result;
     }
 }

@@ -27,13 +27,6 @@ public class BookRequestDto {
     public BookRequestDto() {
     }
 
-    public BookRequestDto(String name, String author, Genre genre, Integer releaseDate) {
-        this.name = name;
-        this.author = author;
-        this.genre = genre;
-        this.releaseDate = releaseDate;
-    }
-
     public Book toBook() {
         Book book = new Book();
         book.setName(name);
@@ -42,15 +35,5 @@ public class BookRequestDto {
         book.setReleaseYear(releaseDate);
 
         return book;
-    }
-
-    public static BookRequestDto toBookRequestDto(Book book) {
-        BookRequestDto bookRequestDto = new BookRequestDto();
-        bookRequestDto.setName(book.getName());
-        bookRequestDto.setAuthor(book.getAuthor());
-        bookRequestDto.setGenre(book.getGenre());
-        bookRequestDto.setReleaseDate(book.getReleaseYear());
-
-        return bookRequestDto;
     }
 }

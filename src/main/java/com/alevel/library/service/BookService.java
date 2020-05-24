@@ -1,6 +1,7 @@
 package com.alevel.library.service;
 
 import com.alevel.library.model.Book;
+import com.alevel.library.model.Client;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,7 +21,9 @@ public interface BookService {
 
     Page<Book> findAll(Pageable pageable);
 
-    Page<Book> findAllBooksByClientId(Integer clientId, Pageable pageable);
-
     void freeBook(int bookId);
+
+    Client findClientByBookId(int bookId);
+
+    Page<Book> search(Pageable pageable, Book book);
 }

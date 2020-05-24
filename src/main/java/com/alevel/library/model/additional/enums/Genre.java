@@ -16,5 +16,6 @@ public enum Genre {
     HISTORY,
     TRAVEL,
     HUMOR,
-    CHILDRENS
+    CHILDRENS,
+    NOVEL
 }

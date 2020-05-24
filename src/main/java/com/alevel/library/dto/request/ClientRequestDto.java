@@ -1,8 +1,6 @@
 package com.alevel.library.dto.request;
 
-import com.alevel.library.dto.response.UserDto;
 import com.alevel.library.model.Client;
-import com.alevel.library.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -21,30 +19,15 @@ public class ClientRequestDto {
 
     Date birthDate;
 
-    public ClientRequestDto() {
-    }
-
-    public ClientRequestDto(String firstName, String lastName, Date birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
-    }
+    Boolean isDebtor;
 
     public Client toClient() {
         Client client = new Client();
         client.setFirstName(firstName);
         client.setLastName(lastName);
         client.setBirthDay(birthDate);
+        client.setIsDebtor(isDebtor);
 
         return client;
-    }
-
-    public static ClientRequestDto toClientRequestDto(Client client) {
-        ClientRequestDto clientRequestDto = new ClientRequestDto();
-        clientRequestDto.setFirstName(client.getFirstName());
-        clientRequestDto.setLastName(client.getLastName());
-        clientRequestDto.setBirthDate(client.getBirthDay());
-
-        return clientRequestDto;
     }
 }
