@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
         user.setStatus(Status.ACTIVE);
 
         User registeredUser = userRepository.save(user);
-        log.info("In register - user: {} successfully registered", registeredUser);
+        log.info("In register - user: {} successfully registered", registeredUser.getLogin());
 
         return registeredUser;
     }
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
             log.warn("In findById - no users found by id: {}", id);
             return null;
         }
-        log.info("In findById - user: {} found by id: {}", result, id);
+        log.info("In findById - user: {} found by id: {}", result.getLogin(), id);
         return result;
     }
 

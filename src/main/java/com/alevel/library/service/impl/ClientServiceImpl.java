@@ -3,7 +3,6 @@ package com.alevel.library.service.impl;
 import com.alevel.library.exceptions.BookNotFoundException;
 import com.alevel.library.exceptions.ClientNotFoundException;
 import com.alevel.library.model.*;
-import com.alevel.library.model.additional.ClientCardItemId;
 import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.repository.ClientRepository;
 import com.alevel.library.service.BookService;
@@ -112,7 +111,7 @@ public class ClientServiceImpl implements ClientService {
             log.warn("In findById - no clients found by id: {}", id);
             return null;
         }
-        log.info("In findById - client: {} found by id: {}", result, id);
+        log.info("In findById - client: {} found by id: {}", result.getFirstName(), id);
         return result;
     }
 
@@ -131,10 +130,13 @@ public class ClientServiceImpl implements ClientService {
         if(book != null && client != null) {
             ClientCard clientCard = client.getClientCard();
             ClientCardItem result = new ClientCardItem();
-            ClientCardItemId clientCardItemId = new ClientCardItemId();
-            result.setPk(clientCardItemId);
             result.setBook(book);
             result.setClientCard(clientCard);
+            result.setStatus(Status.RESERVED);
+
+            book.setPopularityIndex(book.getPopularityIndex() + 1);
+            book.setAvailable(false);
+            bookService.save(book);
 
             Set<ClientCardItem> clientCardItems = clientCard.getClientCardItems();
             if(clientCardItems == null){

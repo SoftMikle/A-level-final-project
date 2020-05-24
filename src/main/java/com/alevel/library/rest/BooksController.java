@@ -1,9 +1,7 @@
 package com.alevel.library.rest;
 
-import com.alevel.library.dto.BookRequestDto;
-import com.alevel.library.dto.request.ClientRequestDto;
+import com.alevel.library.dto.request.BookRequestDto;
 import com.alevel.library.model.Book;
-import com.alevel.library.model.Client;
 import com.alevel.library.service.BookService;
 import com.alevel.library.service.ClientCardService;
 import com.alevel.library.service.ClientService;
@@ -33,11 +31,11 @@ public class BooksController {
 
     @GetMapping
     Page<Book> getAll(@PageableDefault(page = 0, size = 20)
-                        @SortDefault.SortDefaults({
-                                @SortDefault(sort = "name", direction = Sort.Direction.DESC),
-                                @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-                        })
-                                Pageable pageable) {
+                      @SortDefault.SortDefaults({
+                              @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+                              @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                      })
+                              Pageable pageable) {
         Page<Book> result = bookService.findAll(pageable);
         return result;
     }
@@ -50,12 +48,22 @@ public class BooksController {
         return HttpStatus.CREATED;
     }
 
-    @PatchMapping
-    HttpStatus patchBook(@RequestBody BookRequestDto bookRequestDto) {
+    @PatchMapping("/{bookId}")
+    HttpStatus updateBook(@PathVariable int bookId, @RequestBody BookRequestDto bookRequestDto) {
         Book book = bookRequestDto.toBook();
+        book.setId(bookId);
+
         bookService.update(book);
 
-        return HttpStatus.CREATED;
+        return HttpStatus.OK;
+    }
+
+    @PatchMapping("/{bookId}/free")
+    HttpStatus freeBook(@PathVariable int bookId) {
+
+        bookService.freeBook(bookId);
+
+        return HttpStatus.OK;
     }
 
 }

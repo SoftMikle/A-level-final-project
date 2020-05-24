@@ -19,4 +19,8 @@ public interface BookService {
     void delete(Integer id);
 
     Page<Book> findAll(Pageable pageable);
+
+    Page<Book> findAllBooksByClientId(Integer clientId, Pageable pageable);
+
+    void freeBook(int bookId);
 }

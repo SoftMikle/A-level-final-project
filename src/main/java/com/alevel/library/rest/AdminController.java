@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,12 +25,14 @@ public class AdminController {
         this.userService = userService;
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "users/{id}")
     public ResponseEntity<Integer> deleteUserByUserId(@PathVariable(name = "id") int id) {
         userService.delete(id);
         return ResponseEntity.ok(id);
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping(value = "users/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") int id) {
         User user = userService.findById(id);
@@ -48,7 +51,7 @@ public class AdminController {
     public Page<UserDto> getAllUsers(
             @PageableDefault(page = 0, size = 20)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "login", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "login", direction = Sort.Direction.ASC),
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             })
                     Pageable pageable) {

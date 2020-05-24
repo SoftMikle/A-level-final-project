@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "auth")
-public class AuthenticationControllerV1 {
+public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
 
@@ -30,7 +30,7 @@ public class AuthenticationControllerV1 {
     private final UserService userService;
 
     @Autowired
-    public AuthenticationControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -57,22 +57,17 @@ public class AuthenticationControllerV1 {
     }
 
     @PostMapping("/register")
-    public ResponseEntity signUp(@RequestBody RegistrationRequestDto requestDto) {
+    public HttpStatus signUp(@RequestBody RegistrationRequestDto requestDto) {
         try {
             String login = requestDto.getLogin();
             User user = userService.findByLogin(login);
             if (user != null) {
-                return new ResponseEntity("User: " + login + " already exists", HttpStatus.CONFLICT);
+                return HttpStatus.CONFLICT;
             }
             user = RegistrationRequestDto.toUser(requestDto);
             userService.register(user);
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
-            AuthenticationResponseDto response = new AuthenticationResponseDto();
 
-            String token = jwtTokenProvider.createToken(login, user.getRoles());
-            response.setToken(token);
-
-            return ResponseEntity.ok(response);
+            return HttpStatus.CREATED;
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username, email or password");
         }

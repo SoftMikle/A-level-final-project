@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 @Table(name = "books", schema = "library")
@@ -31,7 +32,24 @@ public class Book extends BaseEntity implements Serializable {
     @Column(name = "popularity_index")
     private int popularityIndex;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "pk.book")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "book")
     private ClientCardItem clientCardItem;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book that = (Book) o;
+        return isAvailable() == that.isAvailable() &&
+                getPopularityIndex() == that.getPopularityIndex() &&
+                Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getAuthor(), that.getAuthor()) &&
+                getGenre() == that.getGenre() &&
+                Objects.equals(getReleaseYear(), that.getReleaseYear());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getAuthor(), getGenre(), getReleaseYear(), isAvailable(), getPopularityIndex());
+    }
 }

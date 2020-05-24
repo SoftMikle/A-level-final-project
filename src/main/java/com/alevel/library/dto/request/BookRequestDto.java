@@ -1,7 +1,6 @@
-package com.alevel.library.dto;
+package com.alevel.library.dto.request;
 
 import com.alevel.library.model.Book;
-import com.alevel.library.model.Client;
 import com.alevel.library.model.additional.enums.Genre;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.Data;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)

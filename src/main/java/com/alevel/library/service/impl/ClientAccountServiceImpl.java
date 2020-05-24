@@ -49,7 +49,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
             log.warn("In findById - no clientAccountInfos found by id: {}", id);
             return null;
         }
-        log.info("In findById - clientAccountInfo: {} found by id: {}", result, id);
+        log.info("In findById - clientAccountInfo of client: {} found by id: {}", result.getClient().getLastName(), id);
         return result;
     }
 

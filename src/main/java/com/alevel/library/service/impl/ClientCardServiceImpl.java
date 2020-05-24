@@ -1,5 +1,6 @@
 package com.alevel.library.service.impl;
 
+import com.alevel.library.exceptions.ClientCardNotFoundException;
 import com.alevel.library.model.ClientCard;
 import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.repository.ClientCardRepository;
@@ -45,7 +46,7 @@ public class ClientCardServiceImpl implements ClientCardService {
             log.warn("In findById - no clientCards found by id: {}", id);
             return null;
         }
-        log.info("In findById - clientCard: {} found by id: {}", result, id);
+        log.info("In findById - clientCard of client: {} found by id: {}", result.getClient().getFirstName(), id);
         return result;
     }
 
@@ -56,5 +57,10 @@ public class ClientCardServiceImpl implements ClientCardService {
             log.info("In delete - clientCard with id: {} successfully deleted", id);
         }
         log.info("In delete - clientCard with id: {} not found", id);
+    }
+
+    @Override
+    public ClientCard findByClientId(Integer clientId) {
+        return clientCardRepository.findByClientId(clientId).orElseThrow(() -> new ClientCardNotFoundException("ClientCard not found by clientId"));
     }
 }

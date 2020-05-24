@@ -13,4 +13,6 @@ public interface ClientCardService {
 
     void delete(Integer id);
 
+    ClientCard findByClientId(Integer clientId);
+
 }

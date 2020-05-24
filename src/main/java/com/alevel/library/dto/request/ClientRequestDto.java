@@ -15,6 +15,7 @@ public class ClientRequestDto {
 
     @Size(min = 3, max = 50)
     String firstName;
+
     @Size(min = 3, max = 100)
     String lastName;
 
