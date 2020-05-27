@@ -6,6 +6,10 @@
     <!-- MySQL -->
     <property name="now" value="CURRENT_TIMESTAMP()" dbms="mysql"/>
 
+    <changeSet id="0.1.0" author="mikle.savchenko">
+        <sqlFile path="liquibase/schema.sql"/>
+    </changeSet>
+
     <changeSet id="1.0.0" author="mikle.savchenko">
         <createTable tableName="lib_users" schemaName="library">
             <column name="id" type="INTEGER" autoIncrement="true">
