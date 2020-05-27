@@ -5,6 +5,7 @@ import org.passay.*;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
@@ -12,14 +13,13 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
     }
 
     public boolean isValid(String password, ConstraintValidatorContext context) {
-
-        PasswordValidator validator = new PasswordValidator(List.of(
-                new LengthRule(8, 100),
-                new CharacterRule(EnglishCharacterData.UpperCase, 1),
-                new CharacterRule(EnglishCharacterData.LowerCase, 1),
-                new CharacterRule(EnglishCharacterData.Digit, 1),
-                new WhitespaceRule()
-        ));
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new LengthRule(8, 100));
+        rules.add(new CharacterRule(EnglishCharacterData.UpperCase, 1));
+        rules.add(new CharacterRule(EnglishCharacterData.LowerCase, 1));
+        rules.add(new CharacterRule(EnglishCharacterData.Digit, 1));
+        rules.add(new WhitespaceRule());
+        PasswordValidator validator = new PasswordValidator(rules);
         RuleResult result = validator.validate(new PasswordData(password));
         if (result.isValid()) {
             return true;

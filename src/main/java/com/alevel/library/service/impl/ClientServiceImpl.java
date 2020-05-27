@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -147,7 +148,9 @@ public class ClientServiceImpl implements ClientService {
 
             Set<ClientCardItem> clientCardItems = clientCard.getClientCardItems();
             if (clientCardItems == null) {
-                clientCardItems = Set.of(result);
+                Set<ClientCardItem> set = new HashSet<>();
+                set.add(result);
+                clientCardItems = set;
                 clientCard.setClientCardItems(clientCardItems);
             } else {
                 clientCard.getClientCardItems().add(result);

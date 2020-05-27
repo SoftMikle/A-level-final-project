@@ -15,7 +15,7 @@
     <description>a-level final project</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>8</java.version>
         <mysql.connetor.version>8.0.20</mysql.connetor.version>
         <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
     </properties>
@@ -113,7 +113,7 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                    <release>11</release>  <!--or <release>10</release>-->
+                    <release>8</release>  <!--or <release>10</release>-->
                 </configuration>
             </plugin>
         </plugins>
