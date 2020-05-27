@@ -79,7 +79,8 @@
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="lib_users"/>
+                                 referencedTableName="lib_users"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.4" author="mikle.savchenko">
@@ -90,7 +91,8 @@
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="roles"/>
+                                 referencedTableName="roles"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.5" author="mikle.savchenko">
@@ -315,7 +317,8 @@
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="clients"/>
+                                 referencedTableName="clients"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.14" author="mikle.savchenko">
@@ -370,7 +373,8 @@
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="client_cards"/>
+                                 referencedTableName="client_cards"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.17" author="mikle.savchenko">
@@ -381,7 +385,8 @@
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="books"/>
+                                 referencedTableName="books"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.18" author="mikle.savchenko">
@@ -467,7 +472,8 @@
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="clients"/>
+                                 referencedTableName="clients"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.21" author="mikle.savchenko">
@@ -520,7 +526,8 @@
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="client_accounts_info"/>
+                                 referencedTableName="client_accounts_info"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.24" author="mikle.savchenko">
@@ -531,7 +538,8 @@
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
                                  referencedColumnNames="id"
-                                 referencedTableName="books"/>
+                                 referencedTableName="books"
+                                 referencedTableSchemaName="library"/>
     </changeSet>
 
     <changeSet id="1.0.25" author="mikle.savchenko">
