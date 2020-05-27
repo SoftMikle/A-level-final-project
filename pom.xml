@@ -118,10 +118,6 @@
                 <version>3.8.9</version>
                 <configuration>
                     <changeLogFile>src/main/resources/liquibase/db.changelog-master.xml</changeLogFile>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>{spring.liquibase.url}</url>
-                    <username>{spring.liquibase.user}</username>
-                    <password>{spring.liquibase.password}</password>
                     <defaultSchemaName>library</defaultSchemaName>
                 </configuration>
                 <executions>
