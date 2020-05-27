@@ -9,7 +9,7 @@ import lombok.Data;
 public class UserDto {
 
     private int id;
-    private String username;
+    private String login;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,7 +17,7 @@ public class UserDto {
     public User toUser() {
         User user = new User();
         user.setId(id);
-        user.setUsername(username);
+        user.setLogin(login);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
@@ -25,10 +25,10 @@ public class UserDto {
         return user;
     }
 
-    public static UserDto toUserDto(User user) {
+    public static UserDto toDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
+        userDto.setLogin(user.getLogin());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
