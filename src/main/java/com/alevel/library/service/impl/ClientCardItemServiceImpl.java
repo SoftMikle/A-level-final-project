@@ -21,14 +21,10 @@ import java.util.List;
 @Slf4j
 public class ClientCardItemServiceImpl implements ClientCardItemService {
 
-    private final ClientCardItemRepository clientCardItemRepository;
+    @Autowired
+    private ClientCardItemRepository clientCardItemRepository;
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    public ClientCardItemServiceImpl(ClientCardItemRepository clientCardItemRepository) {
-        this.clientCardItemRepository = clientCardItemRepository;
-    }
 
     @Override
     public boolean existsById(Integer id) {

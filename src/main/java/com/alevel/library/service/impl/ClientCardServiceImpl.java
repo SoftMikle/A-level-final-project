@@ -13,12 +13,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ClientCardServiceImpl implements ClientCardService {
 
-    private final ClientCardRepository clientCardRepository;
-
     @Autowired
-    public ClientCardServiceImpl(ClientCardRepository clientCardRepository) {
-        this.clientCardRepository = clientCardRepository;
-    }
+    private ClientCardRepository clientCardRepository;
 
     @Override
     public boolean existsById(Integer id) {

@@ -24,23 +24,16 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 @Slf4j
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepository clientRepository;
-    private final ClientCardService clientCardService;
-    private final ClientAccountService clientAccountService;
-    private final BookService bookService;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private ClientCardService clientCardService;
+    @Autowired
+    private ClientAccountService clientAccountService;
+    @Autowired
+    private BookService bookService;
     @Autowired
     private ClientCardItemService clientCardItemService;
-
-    @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository,
-                             ClientCardService clientCardService,
-                             ClientAccountService clientAccountService,
-                             BookService bookService) {
-        this.clientRepository = clientRepository;
-        this.clientCardService = clientCardService;
-        this.clientAccountService = clientAccountService;
-        this.bookService = bookService;
-    }
 
     @Override
     public boolean existsById(Integer id) {

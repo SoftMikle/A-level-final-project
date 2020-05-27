@@ -16,14 +16,10 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ClientAccountServiceImpl implements ClientAccountService {
 
-    private final ClientAccountRepository clientAccountRepository;
-    private final ClientRepository clientRepository;
-
     @Autowired
-    public ClientAccountServiceImpl(ClientAccountRepository clientAccountRepository, ClientRepository clientRepository) {
-        this.clientAccountRepository = clientAccountRepository;
-        this.clientRepository = clientRepository;
-    }
+    private ClientAccountRepository clientAccountRepository;
+    @Autowired
+    private ClientRepository clientRepository;
 
     @Override
     public boolean existsById(Integer id) {

@@ -30,14 +30,6 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private ClientCardItemService clientCardItemService;
 
-
-
-
-//    @Autowired
-//    public BookServiceImpl(BookRepository bookRepository) {
-//        this.bookRepository = bookRepository;
-//    }
-
     @Override
     public boolean existsById(Integer id) {
         boolean result = bookRepository.existsById(id);
