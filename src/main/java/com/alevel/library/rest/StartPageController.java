@@ -1,5 +1,6 @@
 package com.alevel.library.rest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StartPageController {
 
     @GetMapping
-    public String hello() {
-        return "greeting";
+    public ResponseEntity<String> hello(){
+        return ResponseEntity.ok("Hello from Heroku A-level-library app!");
     }
 }
