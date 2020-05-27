@@ -1,5 +1,7 @@
 package com.alevel.library.service.impl;
 
+import com.alevel.library.exceptions.BookStatusException;
+import com.alevel.library.exceptions.ClientAccountNotFoundException;
 import com.alevel.library.exceptions.ClientNotFoundException;
 import com.alevel.library.model.ClientAccountInfo;
 import com.alevel.library.model.additional.enums.Status;
@@ -43,14 +45,13 @@ public class ClientAccountServiceImpl implements ClientAccountService {
 
     @Override
     public ClientAccountInfo findById(Integer id) {
-        ClientAccountInfo result = clientAccountRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            log.warn("In findById - no clientAccountInfos found by id: {}", id);
-            return null;
+        if (existsById(id)) {
+            ClientAccountInfo result = clientAccountRepository.findById(id).orElse(null);
+            log.info("In findById - clientAccountInfo of client: {} found by id: {}", result.getClient().getLastName(), id);
+            return result;
         }
-        log.info("In findById - clientAccountInfo of client: {} found by id: {}", result.getClient().getLastName(), id);
-        return result;
+        log.warn("In findById - no clientAccountInfos found by id: {}", id);
+        throw new ClientAccountNotFoundException("no clientAccountInfos found by id: " + id);
     }
 
     @Override
@@ -60,11 +61,15 @@ public class ClientAccountServiceImpl implements ClientAccountService {
             log.info("In delete - clientAccountInfo with id: {} successfully deleted", id);
         }
         log.info("In delete - clientAccountInfo with id: {} not found", id);
+        throw new ClientAccountNotFoundException("no clientAccountInfos found by id: " + id);
     }
 
     public ClientAccountInfo findByClientId(Integer clientId) {
-        if(clientRepository.existsById(clientId)){
+        if (clientRepository.existsById(clientId)) {
             ClientAccountInfo result = clientAccountRepository.findByClientId(clientId);
+            if (result == null) {
+                throw new ClientAccountNotFoundException("no clientAccountInfos found");
+            }
             return result;
         }
         throw new ClientNotFoundException("Invalid id for client");

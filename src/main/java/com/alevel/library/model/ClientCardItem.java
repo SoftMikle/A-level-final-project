@@ -2,8 +2,6 @@ package com.alevel.library.model;
 
 import com.alevel.library.model.additional.enums.Status;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

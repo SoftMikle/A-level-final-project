@@ -1,5 +1,6 @@
 package com.alevel.library.service.impl;
 
+import com.alevel.library.exceptions.ClientCardItemNotFoundException;
 import com.alevel.library.exceptions.ClientNotFoundException;
 import com.alevel.library.model.Client;
 import com.alevel.library.model.ClientCard;
@@ -49,25 +50,25 @@ public class ClientCardItemServiceImpl implements ClientCardItemService {
 
     @Override
     public void updateStatus(ClientCardItem clientCardItem) {
-        if(clientCardItem != null){
+        if (clientCardItem != null && clientCardItem.getId() != null) {
             clientCardItemRepository.save(clientCardItem);
             log.info("In updateStatus - clientCardItem with id: {} successfully changed status",
                     clientCardItem.getId());
         } else {
             log.warn("In updateStatus - clientCardItem with id: {} not found", clientCardItem.getId());
+            throw new ClientCardItemNotFoundException("Invalid id for ClientCardItem");
         }
     }
 
     @Override
     public ClientCardItem findById(Integer id) {
-        ClientCardItem result = clientCardItemRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            log.warn("In findById - no clientCardItem found by id: {}", id);
-            return null;
+        if (existsById(id)) {
+            ClientCardItem result = clientCardItemRepository.findById(id).orElse(null);
+            log.info("In findById - clientCardItem of client: {} found by id: {}", result.getClientCard().getClient().getFirstName(), id);
+            return result;
         }
-        log.info("In findById - clientCardItem of client: {} found by id: {}", result.getClientCard().getClient().getFirstName(), id);
-        return result;
+        log.warn("In findById - no clientCardItem found by id: {}", id);
+        throw new ClientCardItemNotFoundException("Invalid id for ClientCardItem");
     }
 
     @Override
@@ -77,6 +78,7 @@ public class ClientCardItemServiceImpl implements ClientCardItemService {
             log.info("In delete - clientCardItem with id: {} successfully deleted", id);
         }
         log.info("In delete - clientCardItem with id: {} not found", id);
+        throw new ClientCardItemNotFoundException("Invalid id for ClientCardItem");
     }
 
     @Override
@@ -86,7 +88,7 @@ public class ClientCardItemServiceImpl implements ClientCardItemService {
 
     @Override
     public Page<ClientCardItem> findByClientId(Integer clientId, Pageable pageable) {
-        if(clientService.existsById(clientId)){
+        if (clientService.existsById(clientId)) {
             Client client = clientService.findById(clientId);
             ClientCard clientCard = client.getClientCard();
             int clientCardId = clientCard.getId();

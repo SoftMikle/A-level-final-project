@@ -13,8 +13,6 @@ public interface ClientService {
 
     Client update(Client client);
 
-    Page<Client> findByLastName(Pageable pageable, String lastName);
-
     Client findById(Integer id);
 
     void delete(Integer id);

@@ -7,5 +7,4 @@ import java.util.Optional;
 
 public interface ClientCardRepository extends CrudRepository<ClientCard, Integer> {
     Optional<ClientCard> findByClientId(Integer clientId);
-
 }

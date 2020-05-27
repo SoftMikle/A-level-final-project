@@ -18,13 +18,13 @@ public class ClientCardItemResponseDto {
     public ClientCardItemResponseDto() {
     }
 
-    public static ClientCardItemResponseDto toClientCardItemResponseDto(ClientCardItem clientCardItem) {
+    public static ClientCardItemResponseDto toDto(ClientCardItem clientCardItem) {
         ClientCardItemResponseDto clientResponseDto = new ClientCardItemResponseDto();
         clientResponseDto.setId(clientCardItem.getId());
         clientResponseDto.setReserved(clientCardItem.getReserved());
         clientResponseDto.setStatus(clientCardItem.getStatus());
         clientResponseDto.setReturned(clientCardItem.getReturned());
-        BookResponseDto bookResponseDto = BookResponseDto.toBookResponseDto(clientCardItem.getBook());
+        BookResponseDto bookResponseDto = BookResponseDto.toDto(clientCardItem.getBook());
         clientResponseDto.setBook(bookResponseDto);
 
         return clientResponseDto;

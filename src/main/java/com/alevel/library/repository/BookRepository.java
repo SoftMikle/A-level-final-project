@@ -8,7 +8,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 public interface BookRepository extends PagingAndSortingRepository<Book, Integer>, QueryByExampleExecutor<Book> {
-    Page<Book> findByName(Pageable pageable, String name);
-
     Page<Book> findAll(Example example, Pageable pageable);
 }

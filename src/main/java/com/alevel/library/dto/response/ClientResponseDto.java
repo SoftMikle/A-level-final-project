@@ -17,7 +17,7 @@ public class ClientResponseDto {
     public ClientResponseDto() {
     }
 
-    public static ClientResponseDto toClientResponseDto(Client client) {
+    public static ClientResponseDto toDto(Client client) {
         ClientResponseDto clientResponseDto = new ClientResponseDto();
         clientResponseDto.setId(client.getId());
         clientResponseDto.setFirstName(client.getFirstName());

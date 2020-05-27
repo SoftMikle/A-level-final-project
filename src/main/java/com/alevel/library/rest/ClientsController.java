@@ -48,29 +48,29 @@ public class ClientsController {
         this.clientCardItemService = clientCardItemService;
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping
     Page<ClientResponseDto> getAll(@PageableDefault(page = 0, size = 20)
-                        @SortDefault.SortDefaults({
-                                @SortDefault(sort = "lastName", direction = Sort.Direction.DESC),
-                                @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-                        })
-                                Pageable pageable) {
+                                   @SortDefault.SortDefaults({
+                                           @SortDefault(sort = "lastName", direction = Sort.Direction.DESC),
+                                           @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                                   })
+                                           Pageable pageable) {
         Page<Client> clients = clientService.findAll(pageable);
-        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toDto);
         return result;
     }
 
+    @Secured("ROLE_ADMIN")
     @PostMapping
     HttpStatus postClient(@RequestBody ClientRequestDto clientRequestDto) {
         Client client = clientRequestDto.toClient();
-        client = clientService.save(client);
-        if (client.getId() == null) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
+        clientService.save(client);
 
         return HttpStatus.CREATED;
     }
 
+    @Secured("ROLE_ADMIN")
     @PatchMapping("{clientId}")
     HttpStatus putClient(@RequestBody ClientRequestDto clientRequestDto, @PathVariable int clientId) {
         Client client = clientRequestDto.toClient();
@@ -79,30 +79,25 @@ public class ClientsController {
         return HttpStatus.OK;
     }
 
-    @Secured("ROLE_ADMIN")
     @GetMapping("{clientId}")
     ResponseEntity<ClientResponseDto> getById(@PathVariable int clientId) {
         Client client = clientService.findById(clientId);
-        if (client != null) {
-            ClientResponseDto result = ClientResponseDto.toClientResponseDto(client);
-            return ResponseEntity.ok(result);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ClientResponseDto result = ClientResponseDto.toDto(client);
+        return ResponseEntity.ok(result);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping("{clientId}")
     HttpStatus deleteById(@PathVariable int clientId) {
-        if (clientService.existsById(clientId)) {
-            clientService.delete(clientId);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.NOT_FOUND;
+        clientService.delete(clientId);
+        return HttpStatus.OK;
+
     }
 
     @GetMapping("{clientId}/extra")
     ResponseEntity<ClientAccountInfoDto> getAccountInfoById(@PathVariable int clientId) {
         ClientAccountInfo clientAccountInfo = clientAccountService.findByClientId(clientId);
-        ClientAccountInfoDto result = ClientAccountInfoDto.toClientAccountInfoDto(clientAccountInfo);
+        ClientAccountInfoDto result = ClientAccountInfoDto.toDto(clientAccountInfo);
         return ResponseEntity.ok(result);
     }
 
@@ -110,7 +105,7 @@ public class ClientsController {
     ResponseEntity<Page<BookResponseDto>> getAllClientsBooks(@PathVariable int clientId, Pageable pageable) {
 
         Page<Book> books = clientService.findAllBooksByClientId(clientId, pageable);
-        Page<BookResponseDto> result = books.map(BookResponseDto::toBookResponseDto);
+        Page<BookResponseDto> result = books.map(BookResponseDto::toDto);
         return ResponseEntity.ok(result);
     }
 
@@ -118,7 +113,7 @@ public class ClientsController {
     ResponseEntity<Page<ClientCardItemResponseDto>> getClientsHistory(@PathVariable int clientId, Pageable pageable) {
         Page<ClientCardItem> clientCardItems = clientCardItemService.findByClientId(clientId, pageable);
         Page<ClientCardItemResponseDto> result = clientCardItems
-                .map(ClientCardItemResponseDto::toClientCardItemResponseDto);
+                .map(ClientCardItemResponseDto::toDto);
         return ResponseEntity.ok(result);
     }
 
@@ -126,25 +121,27 @@ public class ClientsController {
     ResponseEntity<ClientResponseDto> getClientByBookId(@PathVariable int bookId) {
 
         Client client = bookService.findClientByBookId(bookId);
-        ClientResponseDto result = ClientResponseDto.toClientResponseDto(client);
+        ClientResponseDto result = ClientResponseDto.toDto(client);
         return ResponseEntity.ok(result);
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/debtors")
     ResponseEntity<Page<ClientResponseDto>> getAllDebtors(Pageable pageable) {
 
         Page<Client> clients = clientService.findAllDebtors(pageable);
-        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toDto);
         return ResponseEntity.ok(result);
     }
 
-
+    @Secured("ROLE_ADMIN")
     @PatchMapping("{clientId}/books/{bookId}")
     HttpStatus setBook(@PathVariable int clientId, @PathVariable int bookId) {
         clientService.setBook(clientId, bookId);
         return HttpStatus.OK;
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/search")
     ResponseEntity<Page<ClientResponseDto>> getAllByExample(
             @RequestParam(required = false) String name,
@@ -157,7 +154,7 @@ public class ClientsController {
         client.setLastName(surname);
         client.setBirthDay(birthDate);
         Page<Client> clients = clientService.search(pageable, client);
-        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toClientResponseDto);
+        Page<ClientResponseDto> result = clients.map(ClientResponseDto::toDto);
         return ResponseEntity.ok(result);
     }
 }

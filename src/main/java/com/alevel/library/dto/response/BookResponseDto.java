@@ -21,7 +21,7 @@ public class BookResponseDto {
     private boolean isAvailable;
     private int popularityIndex;
 
-    public static BookResponseDto toBookResponseDto(Book book) {
+    public static BookResponseDto toDto(Book book) {
         BookResponseDto bookResponseDto = new BookResponseDto();
         bookResponseDto.setId(book.getId());
         bookResponseDto.setName(book.getName());

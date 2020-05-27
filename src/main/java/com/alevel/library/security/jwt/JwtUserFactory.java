@@ -1,8 +1,8 @@
 package com.alevel.library.security.jwt;
 
 import com.alevel.library.model.Role;
-import com.alevel.library.model.additional.enums.Status;
 import com.alevel.library.model.User;
+import com.alevel.library.model.additional.enums.Status;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

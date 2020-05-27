@@ -40,14 +40,13 @@ public class ClientCardServiceImpl implements ClientCardService {
 
     @Override
     public ClientCard findById(Integer id) {
+        if (existsById(id)) {
         ClientCard result = clientCardRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            log.warn("In findById - no clientCards found by id: {}", id);
-            return null;
+            log.info("In findById - clientCard of client: {} found by id: {}", result.getClient().getFirstName(), id);
+            return result;
         }
-        log.info("In findById - clientCard of client: {} found by id: {}", result.getClient().getFirstName(), id);
-        return result;
+        log.warn("In findById - no clientCards found by id: {}", id);
+        throw new ClientCardNotFoundException("Invalid id for clientCard");
     }
 
     @Override
@@ -57,10 +56,12 @@ public class ClientCardServiceImpl implements ClientCardService {
             log.info("In delete - clientCard with id: {} successfully deleted", id);
         }
         log.info("In delete - clientCard with id: {} not found", id);
+        throw new ClientCardNotFoundException("Invalid id for clientCard");
     }
 
     @Override
     public ClientCard findByClientId(Integer clientId) {
-        return clientCardRepository.findByClientId(clientId).orElseThrow(() -> new ClientCardNotFoundException("ClientCard not found by clientId"));
+        return clientCardRepository.findByClientId(clientId).orElseThrow(
+                () -> new ClientCardNotFoundException("ClientCard not found by clientId"));
     }
 }

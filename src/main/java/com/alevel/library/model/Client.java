@@ -2,8 +2,6 @@ package com.alevel.library.model;
 
 import com.alevel.library.model.additional.BaseEntity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;

@@ -13,7 +13,7 @@ public class ClientAccountInfoDto {
     public ClientAccountInfoDto() {
     }
 
-    public static ClientAccountInfoDto toClientAccountInfoDto(ClientAccountInfo clientAccountInfo) {
+    public static ClientAccountInfoDto toDto(ClientAccountInfo clientAccountInfo) {
         ClientAccountInfoDto clientAccountInfoDto = new ClientAccountInfoDto();
         clientAccountInfoDto.setId(clientAccountInfo.getId());
         clientAccountInfoDto.setDiscount(clientAccountInfo.getDiscount());

@@ -13,8 +13,6 @@ public interface BookService {
 
     Book update(Book book);
 
-    Page<Book> findByName(Pageable pageable, String name);
-
     Book findById(Integer id);
 
     void delete(Integer id);

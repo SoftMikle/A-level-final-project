@@ -1,6 +1,6 @@
 package com.alevel.library.rest;
 
-import com.alevel.library.dto.response.UserDto;
+import com.alevel.library.dto.response.UserResponseDto;
 import com.alevel.library.model.User;
 import com.alevel.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,41 +24,30 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @Secured("ROLE_ADMIN")
-    @DeleteMapping(value = "users/{id}")
-    public ResponseEntity<Integer> deleteUserByUserId(@PathVariable(name = "id") int id) {
-        userService.delete(id);
-        return ResponseEntity.ok(id);
+    @GetMapping(value = "/users")
+    public Page<UserResponseDto> getAllUsers(
+            @PageableDefault(page = 0, size = 20)
+            @SortDefault.SortDefaults({@SortDefault(sort = "id", direction = Sort.Direction.ASC)})
+                    Pageable pageable) {
+        Page<User> users = userService.findAll(pageable);
+        Page<UserResponseDto> result = users.map(UserResponseDto::toDto);
+
+        return result;
     }
 
-    @Secured("ROLE_ADMIN")
-    @GetMapping(value = "users/{id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") int id) {
+    @GetMapping(value = "/users/{id}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable(name = "id") int id) {
         User user = userService.findById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        UserDto result = UserDto.toUserDto(user);
+        UserResponseDto result = UserResponseDto.toDto(user);
 
         return ResponseEntity.ok(result);
 
     }
 
-    @GetMapping(value = "users")
-    public Page<UserDto> getAllUsers(
-            @PageableDefault(page = 0, size = 20)
-            @SortDefault.SortDefaults({
-                    @SortDefault(sort = "login", direction = Sort.Direction.ASC),
-                    @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-            })
-                    Pageable pageable) {
-
-        Page<User> users = userService.findAll(pageable);
-        Page<UserDto> result = users.map(UserDto::toUserDto);
-
-        return result;
+    @DeleteMapping(value = "/users/{id}")
+    public HttpStatus deleteUserByUserId(@PathVariable(name = "id") int id) {
+        userService.delete(id);
+        return HttpStatus.OK;
     }
 
 }

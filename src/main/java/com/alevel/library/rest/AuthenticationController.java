@@ -13,11 +13,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "auth")
@@ -42,11 +43,7 @@ public class AuthenticationController {
             String login = requestDto.getLogin();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, requestDto.getPassword()));
             User user = userService.findByLogin(login);
-            if (user == null) {
-                throw new UsernameNotFoundException("User with login: " + login + " not found");
-            }
             AuthenticationResponseDto response = new AuthenticationResponseDto();
-
             String token = jwtTokenProvider.createToken(login, user.getRoles());
             response.setToken(token);
 
@@ -57,20 +54,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public HttpStatus signUp(@RequestBody RegistrationRequestDto requestDto) {
-        try {
-            String login = requestDto.getLogin();
-            User user = userService.findByLogin(login);
-            if (user != null) {
-                return HttpStatus.CONFLICT;
-            }
-            user = RegistrationRequestDto.toUser(requestDto);
-            userService.register(user);
+    public HttpStatus signUp(@Valid @RequestBody RegistrationRequestDto requestDto) {
+        User user = RegistrationRequestDto.toUser(requestDto);
+        userService.register(user);
 
-            return HttpStatus.CREATED;
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username, email or password");
-        }
+        return HttpStatus.CREATED;
     }
 
 }

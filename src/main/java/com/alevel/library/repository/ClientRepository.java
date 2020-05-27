@@ -8,11 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 public interface ClientRepository extends PagingAndSortingRepository<Client, Integer>, QueryByExampleExecutor<Client> {
-
-    Page<Client> findByLastName(Pageable pageable, String lastName);
-
     Page<Client> findByIsDebtor(Pageable pageable, boolean idDebtor);
 
     Page<Client> findAll(Example example, Pageable pageable);
-
 }

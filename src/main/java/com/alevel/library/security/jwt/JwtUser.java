@@ -12,12 +12,12 @@ public class JwtUser implements UserDetails {
     private final boolean enabled;
     private final Date lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority> authorities;
-    private int id;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
+    private final int id;
+    private final String username;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+    private final String password;
 
     public JwtUser(
             int id,

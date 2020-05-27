@@ -18,4 +18,6 @@ public interface UserService {
     void delete(Integer id);
 
     Page<User> findAll(Pageable pageable);
+
+    void update(User newUser);
 }

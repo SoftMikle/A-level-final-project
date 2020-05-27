@@ -1,6 +1,7 @@
 package com.alevel.library.service.impl;
 
 import com.alevel.library.exceptions.BookNotFoundException;
+import com.alevel.library.exceptions.BookStatusException;
 import com.alevel.library.exceptions.ClientNotFoundException;
 import com.alevel.library.model.*;
 import com.alevel.library.model.additional.enums.Status;
@@ -24,10 +25,10 @@ public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientCardService clientCardService;
-    @Autowired
-    private ClientCardItemService clientCardItemService;
     private final ClientAccountService clientAccountService;
     private final BookService bookService;
+    @Autowired
+    private ClientCardItemService clientCardItemService;
 
     @Autowired
     public ClientServiceImpl(ClientRepository clientRepository,
@@ -55,14 +56,10 @@ public class ClientServiceImpl implements ClientService {
         client.setStatus(Status.ACTIVE);
         Client registeredClient = clientRepository.save(client);
 
-        System.out.println("id = " + registeredClient.getId());
-
         ClientCard clientCard = new ClientCard();
         clientCard.setClient(registeredClient);
         clientCard.setStatus(Status.ACTIVE);
         clientCardService.save(clientCard);
-
-        log.info("In create - client: {} successfully registered", registeredClient.getLastName());
 
         ClientAccountInfo clientAccountInfo = new ClientAccountInfo();
         clientAccountInfo.setDiscount(.0);
@@ -70,6 +67,8 @@ public class ClientServiceImpl implements ClientService {
         clientAccountInfo.setClient(registeredClient);
         clientAccountInfo.setStatus(Status.ACTIVE);
         clientAccountService.save(clientAccountInfo);
+
+        log.info("In create - client: {} successfully registered", registeredClient.getLastName());
 
         return registeredClient;
     }
@@ -98,27 +97,22 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Page<Client> findAll(Pageable pageable) {
         Page<Client> result = clientRepository.findAll(pageable);
+        if (result.getContent().size() < 1) {
+            throw new ClientNotFoundException("No clients found by searching request");
+        }
         log.info("In findAll - {} clients found", result.getContent().size());
         return result;
     }
 
     @Override
-    public Page<Client> findByLastName(Pageable pageable, String lastName) {
-        Page<Client> result = clientRepository.findByLastName(pageable, lastName);
-        log.info("In findBySurname - {} clients found by surname: {}", result.getContent().size(), lastName);
-        return result;
-    }
-
-    @Override
     public Client findById(Integer id) {
-        Client result = clientRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            log.warn("In findById - no clients found by id: {}", id);
-            return null;
+        if (clientRepository.existsById(id)) {
+            Client result = clientRepository.findById(id).orElse(null);
+            log.info("In findById - client: {} found by id: {}", result.getFirstName(), id);
+            return result;
         }
-        log.info("In findById - client: {} found by id: {}", result.getFirstName(), id);
-        return result;
+        log.warn("In findById - no clients found by id: {}", id);
+        throw new ClientNotFoundException("Invalid id for client");
     }
 
     @Override
@@ -126,14 +120,19 @@ public class ClientServiceImpl implements ClientService {
         if (clientRepository.existsById(id)) {
             clientRepository.deleteById(id);
             log.info("In delete - client with id: {} successfully deleted", id);
+        } else {
+            log.info("In delete - client with id: {} not found", id);
+            throw new ClientNotFoundException("Invalid id for client");
         }
-        log.info("In delete - client with id: {} not found", id);
     }
 
     public void setBook(int clientId, int bookId) {
         Client client = clientRepository.findById(clientId).orElse(null);
         Book book = bookService.findById(bookId);
         if (book != null && client != null) {
+            if (!book.getIsAvailable()) {
+                throw new BookStatusException("Book is already reserved");
+            }
             ClientCard clientCard = client.getClientCard();
             ClientCardItem result = new ClientCardItem();
 
@@ -166,6 +165,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Page<Client> findAllDebtors(Pageable pageable) {
         Page<Client> result = clientRepository.findByIsDebtor(pageable, true);
+    if (result.getContent().size() < 1) {
+      throw new ClientNotFoundException("No debtors found by searching request");
+    }
         return result;
     }
 
@@ -180,6 +182,9 @@ public class ClientServiceImpl implements ClientService {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), books.size());
         Page<Book> result = new PageImpl(books.subList(start, end), pageable, books.size());
+        if (result.getContent().size() < 1) {
+            throw new BookNotFoundException("No books found by client: " + clientId);
+        }
         return result;
     }
 
@@ -194,6 +199,9 @@ public class ClientServiceImpl implements ClientService {
         Example<Client> example = Example.of(client, matcher);
 
         Page<Client> result = clientRepository.findAll(example, pageable);
+        if (result.getContent().size() < 1) {
+            throw new ClientNotFoundException("No clients found by searching request");
+        }
         return result;
     }
 }
