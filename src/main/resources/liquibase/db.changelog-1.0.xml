@@ -74,6 +74,7 @@
     <changeSet id="1.0.3" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="user_roles"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_user_roles_user"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
@@ -84,6 +85,7 @@
     <changeSet id="1.0.4" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="role_id"
                                  baseTableName="user_roles"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_user_roles_roles"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
@@ -308,6 +310,7 @@
     <changeSet id="1.0.13" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="client_cards"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_client_cards_clients"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
@@ -362,6 +365,7 @@
     <changeSet id="1.0.16" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="client_card_id"
                                  baseTableName="client_card_items"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_client_card_items_client_cards"
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
@@ -372,6 +376,7 @@
     <changeSet id="1.0.17" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="book_id"
                                  baseTableName="client_card_items"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_client_card_items_books"
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
@@ -457,6 +462,7 @@
     <changeSet id="1.0.20" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="client_accounts_info"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_client_accounts_info_clients"
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
@@ -509,6 +515,7 @@
     <changeSet id="1.0.23" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="account_id"
                                  baseTableName="accounts_donated_books"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_accounts_donated_books_client_accounts_info"
                                  onDelete="RESTRICT"
                                  onUpdate="RESTRICT"
@@ -519,6 +526,7 @@
     <changeSet id="1.0.24" author="mikle.savchenko">
         <addForeignKeyConstraint baseColumnNames="book_id"
                                  baseTableName="accounts_donated_books"
+                                 baseTableSchemaName="library"
                                  constraintName="fk_accounts_donated_books_book"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"
