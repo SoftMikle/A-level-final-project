@@ -22,12 +22,11 @@ class ClientAccountServiceImplTest {
   @Mock
   private ClientRepository clientRepository;
 
-  private ClientAccountServiceImpl clientAccountService;
+  @InjectMocks private ClientAccountServiceImpl clientAccountService;
 
   @BeforeEach
   public void setUp(){
     MockitoAnnotations.initMocks(this);
-    clientAccountService = new ClientAccountServiceImpl(clientAccountRepository, clientRepository);
   }
 
   @Test

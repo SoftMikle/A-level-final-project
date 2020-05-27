@@ -29,9 +29,6 @@ class BookServiceImplTest {
   @BeforeEach
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    //    service = new BookServiceImpl(bookRepository);
-    //    service = new BookServiceImpl(bookRepository);
-
   }
 
   @Test
