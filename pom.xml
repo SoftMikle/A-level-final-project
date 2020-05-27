@@ -118,7 +118,7 @@
                 <version>3.8.9</version>
                 <configuration>
                     <changeLogFile>src/main/resources/liquibase/db.changelog-master.xml</changeLogFile>
-                    <defaultSchemaName>library</defaultSchemaName>
+                    <propertyFile>application.properties</propertyFile>
                 </configuration>
                 <executions>
                     <execution>
