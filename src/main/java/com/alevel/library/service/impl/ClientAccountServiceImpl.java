@@ -55,6 +55,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
         if (clientAccountRepository.existsById(id)) {
             clientAccountRepository.deleteById(id);
             log.info("In delete - clientAccountInfo with id: {} successfully deleted", id);
+            return;
         }
         log.info("In delete - clientAccountInfo with id: {} not found", id);
         throw new ClientAccountNotFoundException("no clientAccountInfos found by id: " + id);

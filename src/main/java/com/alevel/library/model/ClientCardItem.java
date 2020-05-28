@@ -61,4 +61,14 @@ public class ClientCardItem implements Serializable {
     public int hashCode() {
         return Objects.hash(getId(), getReserved(), getReturned(), getStatus(), getBook());
     }
+
+    @Override
+    public String toString() {
+        return "ClientCardItem{" +
+                "id=" + id +
+                ", reserved=" + reserved +
+                ", returned=" + returned +
+                ", status=" + status +
+                '}';
+    }
 }
