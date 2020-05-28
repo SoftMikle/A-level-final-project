@@ -38,7 +38,7 @@ public class UserController {
 
     @DeleteMapping(value = "/{id}")
     public HttpStatus deleteUserByUserId(@PathVariable(name = "id") int id) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String login = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         User user = userService.findById(id);
         if (user.getLogin().equals(login)) {
             userService.delete(id);
@@ -49,7 +49,7 @@ public class UserController {
 
     @PatchMapping(value = "/{id}")
     HttpStatus updateUser(@RequestBody RegistrationRequestDto userDto, @PathVariable(name = "id") int id) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String login = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         User user = userService.findById(id);
         if (user.getLogin().equals(login)) {
             User newUser = RegistrationRequestDto.toUser(userDto);
