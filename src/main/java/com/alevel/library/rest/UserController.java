@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @PatchMapping(value = "/{id}")
-    HttpStatus updateUser(@Valid @RequestBody RegistrationRequestDto userDto, @PathVariable(name = "id") int id) {
+    HttpStatus updateUser(@RequestBody RegistrationRequestDto userDto, @PathVariable(name = "id") int id) {
         String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         User user = userService.findById(id);
         if (user.getLogin().equals(login)) {
