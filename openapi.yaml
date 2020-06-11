@@ -1,0 +1,1255 @@
+openapi: 3.0.0
+info:
+  title: Swagger Library
+  description: |
+    This is a sample Library server.
+  contact:
+    email: svampx@gmail.com
+  version: 0.0.2
+servers:
+- url: https://a-level-library.herokuapp.com/
+tags:
+- name: authentication
+  description: Registration and authorization of users
+- name: admin
+  description: User manipulating stuff
+- name: user
+  description: Operating your own account
+- name: client
+  description: Everything about clients and their statistics
+- name: book
+  description: Everything about books and their statistics
+paths:
+  /auth/login:
+    post:
+      tags:
+      - authentication
+      summary: Produces token for user, if his account data is valid
+      operationId: login
+      requestBody:
+        $ref: '#/components/requestBodies/UserAuth'
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        "400":
+          description: Data values are not satisfied to expected values
+  /auth/register:
+    post:
+      tags:
+      - authentication
+      summary: Registrates user
+      operationId: register
+      requestBody:
+        $ref: '#/components/requestBodies/User'
+      responses:
+        "201":
+          description: User created
+        "400":
+          description: Data values are not satisfied to expected values
+        "409":
+          description: Login or email already exist
+  /admin/users:
+    get:
+      tags:
+      - admin
+      summary: Fetch all users from db table
+      operationId: getAllUsers
+      parameters:
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /admin/users/{userId}:
+    get:
+      tags:
+      - admin
+      summary: Find user by ID
+      description: Returns a single client
+      operationId: getUserById
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - admin
+      summary: Delete user by ID
+      description: Deletes user
+      operationId: deleteUserById
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /users/{userId}:
+    get:
+      tags:
+      - user
+      summary: Get my user info
+      operationId: getMyUser
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - user
+      summary: Delete user by ID
+      description: Deletes user
+      operationId: deleteMyUserById
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - user
+      summary: Update user by ID
+      description: Updates user
+      operationId: UpdateMyUserById
+      parameters:
+      - name: userId
+        in: path
+        description: ID of user to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients:
+    get:
+      tags:
+      - client
+      summary: Fetch all clients from db table
+      operationId: getAll
+      parameters:
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Clientsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clients'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - client
+      summary: Add a new client to the clients table
+      operationId: addClient
+      requestBody:
+        $ref: '#/components/requestBodies/Client'
+      responses:
+        "201":
+          description: Client created
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/{clientId}:
+    get:
+      tags:
+      - client
+      summary: Find client by ID
+      description: Returns a single client
+      operationId: getClientById
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - client
+      summary: Delete client, his account info and client card by ID
+      description: Deletes client and all depended entities
+      operationId: deleteClientById
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client to delete
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - client
+      summary: Update an existing client by initialized fields
+      operationId: updateClient
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client to update
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        $ref: '#/components/requestBodies/Client'
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/{clientId}/extra:
+    get:
+      tags:
+      - client
+      summary: Find client with his account information by ID
+      description: Returns a client with account statistics
+      operationId: getAccountInfoById
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/{clientId}/books:
+    get:
+      tags:
+      - client
+      summary: Find all the client's books on hands
+      description: Returns page of booked books
+      operationId: getAllClientsBooks
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/{clientId}/books/{bookId}:
+    patch:
+      tags:
+      - client
+      summary: Binds client with book
+      operationId: setBook
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: bookId
+        in: path
+        description: ID of client to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/{clientId}/history:
+    get:
+      tags:
+      - client
+      summary: Find all the client's books have been ever on hands
+      description: Returns list of booking history
+      operationId: getClientsHistory
+      parameters:
+      - name: clientId
+        in: path
+        description: ID of client
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCardItems'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/books/{bookId}:
+    get:
+      tags:
+      - client
+      summary: Find client by book ID
+      description: Returns a single client
+      operationId: getClientByBookId
+      parameters:
+      - name: bookId
+        in: path
+        description: ID of book reserved by client to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/debtors:
+    get:
+      tags:
+      - client
+      summary: Finds clients by status
+      description: Finds all the clients with Debtor status
+      operationId: getAllDebtors
+      parameters:
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clients'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /clients/search:
+    get:
+      tags:
+      - client
+      summary: Find all Clients by searching parameters
+      description: Returns a page of appropriate clients
+      operationId: findClient
+      parameters:
+      - name: name
+        in: query
+        description: client name
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Elon
+      - name: surname
+        in: query
+        description: client surname
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Musk
+      - name: birthDate
+        in: query
+        description: client birth date
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+          example: 1971-06-28
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Clients'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /books:
+    get:
+      tags:
+      - book
+      summary: Fetch all books from db table
+      operationId: getAllBooks
+      parameters:
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - book
+      summary: Add a new book to the books catalog
+      operationId: addBook
+      requestBody:
+        $ref: '#/components/requestBodies/Book'
+      responses:
+        "201":
+          description: Book Created
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /books/{bookId}:
+    delete:
+      tags:
+      - book
+      summary: delete an existing book
+      operationId: deleteBook
+      parameters:
+      - name: bookId
+        in: path
+        description: ID of book to change reserving status
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - book
+      summary: Update an existing book
+      operationId: updateBook
+      parameters:
+      - name: bookId
+        in: path
+        description: ID of book to change
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        $ref: '#/components/requestBodies/Book'
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /books/{bookId}/free:
+    patch:
+      tags:
+      - book
+      summary: Update an existing book status on free
+      operationId: updateBookReservingStatus
+      parameters:
+      - name: bookId
+        in: path
+        description: ID of book to change reserving status
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: successful operation
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+  /books/search:
+    get:
+      tags:
+      - book
+      summary: Find all books by searching parameters
+      description: Returns page of books with same name
+      operationId: getBooksByBookname
+      parameters:
+      - name: isAvailable
+        in: query
+        description: searching parameter (only free books)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          default: false
+      - name: name
+        in: query
+        description: book name
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Sherlock Holmes
+      - name: author
+        in: query
+        description: book author
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Arthur Conan Doyle
+      - name: genre
+        in: query
+        description: book genre
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Detective fiction
+      - name: releaseYear
+        in: query
+        description: book first release
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          example: 1892
+      - name: page
+        in: query
+        description: number of pages to skip
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: size
+        in: query
+        description: max records in one page
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 100
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Books'
+        "400":
+          description: Data values are not satisfied to expected values
+        "401":
+          description: User is not authorized
+        "403":
+          description: User role are not satisfied to expected value
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    Books:
+      required:
+      - data
+      - paging
+      properties:
+        paging:
+          $ref: '#/components/schemas/Books_paging'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Book'
+    Clients:
+      required:
+      - data
+      - paging
+      properties:
+        paging:
+          $ref: '#/components/schemas/Books_paging'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    ClientCardItems:
+      required:
+      - data
+      - paging
+      properties:
+        paging:
+          $ref: '#/components/schemas/Books_paging'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClientCardItem'
+    Users:
+      required:
+      - data
+      - paging
+      properties:
+        paging:
+          $ref: '#/components/schemas/Books_paging'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+          example: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTdHJlZXRNYWdlIiwicm9sZXMiOlsiUk9MRV9VU0VSIiwiUk9MRV9BRE1JTiJdLCJpYXQiOjE1OTAwMzkyMTgsImV4cCI6MTU5MDA0MjgxOH0.jrWiUM5Oo-MZj47JaT8yzXMeytrcjLT5p2oqmpwbKKQ
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        login:
+          type: string
+          example: Blade
+        firstName:
+          type: string
+          example: Eric
+        lastName:
+          type: string
+          example: Brooks
+        email:
+          type: string
+          example: garlic@is.ok
+        status:
+          type: string
+          example: ACTIVE
+    Client:
+      required:
+      - birthDate
+      - firstName
+      - id
+      - isDebtor
+      - lastName
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+          example: James
+        lastName:
+          type: string
+          example: Bond
+        birthDate:
+          type: string
+          format: date
+          example: 1978-03-02
+        isDebtor:
+          type: boolean
+          example: false
+    Account:
+      required:
+      - bookDonations
+      - clientId
+      - discount
+      - donations
+      - id
+      - registrationDate
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        clientId:
+          type: integer
+          format: int64
+        registrationDate:
+          type: string
+          format: date
+        discount:
+          type: integer
+          format: int64
+        bookDonations:
+          type: integer
+          format: int64
+        donations:
+          type: string
+          example: Had donated book shelves
+    ClientCardItem:
+      required:
+      - bookId
+      - clientCardId
+      - id
+      - reserved
+      - returned
+      - status
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        clientCardId:
+          type: integer
+          format: int64
+        bookId:
+          type: integer
+          format: int64
+        reserved:
+          type: string
+          format: date
+        status:
+          type: string
+        returned:
+          type: string
+          format: date
+    Book:
+      required:
+      - author
+      - genre
+      - id
+      - name
+      - releaseDate
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: Fifty Shades of Gray
+        author:
+          type: string
+          example: Erika Leonard
+        genre:
+          type: string
+          example: novel
+        releaseDate:
+          type: integer
+          format: int64
+          example: 2011
+    Books_paging:
+      type: object
+      properties:
+        page:
+          type: integer
+        size:
+          type: integer
+        pages:
+          type: integer
+  parameters:
+    skipParam:
+      name: page
+      in: query
+      description: number of pages to skip
+      required: false
+      style: form
+      explode: true
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+    limitParam:
+      name: size
+      in: query
+      description: max records in one page
+      required: false
+      style: form
+      explode: true
+      schema:
+        maximum: 100
+        minimum: 0
+        type: integer
+        format: int32
+  requestBodies:
+    UserAuth:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              login:
+                type: string
+                example: StreetMage
+              password:
+                type: string
+                example: HereSAlarm
+    User:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              login:
+                type: string
+                example: StreetMage
+              firstName:
+                type: string
+                example: David
+              lastName:
+                type: string
+                example: Blayne
+              email:
+                type: string
+                format: email
+                example: e@mail.mag
+              password:
+                type: string
+                example: HereSAlarm
+    Client:
+      description: Client object that needs to be added to the Table of clients
+      content:
+        application/json:
+          schema:
+            required:
+            - birthDate
+            - firstName
+            - isDebtor
+            - lastName
+            type: object
+            properties:
+              firstName:
+                type: string
+                example: James
+              lastName:
+                type: string
+                example: Bond
+              birthDate:
+                type: string
+                format: date
+                example: 1978-03-02
+              isDebtor:
+                type: boolean
+                example: false
+      required: true
+    Book:
+      description: Book object that needs to be added to the catalog of books
+      content:
+        application/json:
+          schema:
+            required:
+            - author
+            - genre
+            - name
+            - releaseDate
+            type: object
+            properties:
+              name:
+                type: string
+                example: The Adventures of Sherlock Holmes
+              author:
+                type: string
+                example: Arthur Conan Doyle
+              genre:
+                type: string
+                example: DETECTIVE_FICTION
+              releaseDate:
+                type: integer
+                format: int64
+                example: 1892
+      required: true
+    UserArray:
+      description: List of user object
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      required: true
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
