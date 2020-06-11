@@ -553,4 +553,10 @@
         </insert>
     </changeSet>
 
+    <changeSet id="1.1.0" author="mikle.savchenko">
+        <delete tableName="books" schemaName="library">
+            <where>id=10</where>
+        </delete>
+    </changeSet>
+
 </databaseChangeLog>

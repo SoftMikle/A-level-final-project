@@ -1,8 +1,11 @@
 <img src="icons/e-library.png" align="right" width="122" height="190" />
 
-# README 
-[<img src="https://help.apiary.io/images/swagger-logo.png" width="100" height="100" />](https://editor.swagger.io/) 
+# README  
 
+This is Library managing application 
+
+## Swagger API usage
+[<img src="https://help.apiary.io/images/swagger-logo.png" width="100" height="100" />](https://editor.swagger.io/)
 
 To have a look and test my API first of all is necessary ti configure your browser on CORS mode. Here is an example for Google Chrome browser:
 First of all create a new icon on desktop, then browse properties of the icon and choose "label" tab. In the "object" field should be such pattern: 
