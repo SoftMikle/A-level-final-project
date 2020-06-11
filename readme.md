@@ -9,7 +9,7 @@ Both of actions could take some time while app will wake up after standby.
 [<img src="https://help.apiary.io/images/swagger-logo.png" width="100" height="100" />](https://app.swaggerhub.com/apis-docs/SoftMikle/FirstTest/0.0.2) 
 [<img src="https://cdn.iconscout.com/icon/free/png-512/heroku-225989.png" width="100" height="100" />](https://a-level-library.herokuapp.com/) 
 
-##API testing
+## API testing
 
 For logging in as Admin use next credentials:
 
@@ -18,7 +18,7 @@ For logging in as Admin use next credentials:
  "password": "elementaryWatson!"
  }`
  
-###Tiny guide how to use Swagger OpenApi
+### Tiny guide how to use Swagger OpenApi
  
 - Let's have a look how to authorize in the app. First of all choose Post method with endpoint "/auth/login":
  
